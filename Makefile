@@ -17,8 +17,6 @@ ISO_DIR=isofiles/
 BOOT_ASM_SRC=$(wildcard $(BOOT_SRC_DIR)*.asm)
 BOOT_OBJ_FILES=$(patsubst $(SRC_DIR)%.asm, $(BUILD_DIR)%.o, $(BOOT_ASM_SRC))
 
-all: $(BOOT_OBJ_FILES)
-
 $(BUILD_DIR)%.o: $(SRC_DIR)%.asm
 	@mkdir -p $(BUILD_DIR)$(BOOT_SRC_DIR)
 	$(NASM) $(NASM_FLAGS) $< -o $@
