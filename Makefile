@@ -15,7 +15,9 @@ BUILD_DIR=build/
 ISO_DIR=isofiles/
 
 BOOT_ASM_SRC=$(wildcard $(BOOT_SRC_DIR)*.asm)
+BOOT_C_SRC=$(wildcard $(BOOT_SRC_DIR)*.c)
 BOOT_OBJ_FILES=$(patsubst $(SRC_DIR)%.asm, $(BUILD_DIR)%.o, $(BOOT_ASM_SRC))
+BOOT_C_FILES=$(patsubst $(SRC_DIR)%.c, $(BUILD_DIR)%.o, $(BOOT_C_SRC))
 
 all: $(BOOT_OBJ_FILES)
 
@@ -23,8 +25,13 @@ $(BUILD_DIR)%.o: $(SRC_DIR)%.asm
 	@mkdir -p $(BUILD_DIR)$(BOOT_SRC_DIR)
 	$(NASM) $(NASM_FLAGS) $< -o $@
 
-build_kernel: $(BOOT_OBJ_FILES)
-	$(LD) $(LD_FLAGS) $?
+$(BUILD_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(BUILD_DIR)$(BOOT_SRC_DIR)
+	gcc -Wall -Wextra -std=gnu99 -ffreestanding -nostdlib -o $@ -c $<
+
+build_kernel: $(BOOT_OBJ_FILES) $(BOOT_C_FILES)
+	@echo "started linking lol"
+	ld -T $(BOOT_SRC_DIR)linker.ld -o kernel.bin $^
 	mv kernel.bin $(ISO_DIR)boot
 
 build_iso: build_kernel
