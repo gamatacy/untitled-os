@@ -1,3 +1,4 @@
 build
 isofiles/boot/kernel.iso
 kernel/test
+.vscode
