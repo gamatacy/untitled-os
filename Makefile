@@ -4,26 +4,33 @@ NASM_FLAGS=-f elf64
 LD=ld
 LD_FLAGS=--nmagic --output=kernel.bin --script=$(LINKER)
 
+CC=gcc 
+CFLAGS=-Wall -c -ffreestanding
+
 GRUB=grub-mkrescue
 GRUB_FLAGS=-o
 
 LINKER=x86_64/boot/linker.ld
 
-BOOT_SRC_DIR=x86_64/boot/
-BUILD_DIR=build/
-
 ISO_DIR=isofiles/
 
-BOOT_ASM_SRC=$(wildcard $(BOOT_SRC_DIR)*.asm)
-BOOT_OBJ_FILES=$(patsubst $(SRC_DIR)%.asm, $(BUILD_DIR)%.o, $(BOOT_ASM_SRC))
+x86_64_asm_source_files := $(shell find x86_64 -name *.asm)
+x86_64_asm_object_files := $(patsubst x86_64/%.asm, build/x86_64/%.o, $(x86_64_asm_source_files))
 
-all: $(BOOT_OBJ_FILES)
+kernel_source_files := $(shell find kernel -name *.c)
+kernel_object_files := $(patsubst kernel/%.c, build/kernel/%.o, $(kernel_source_files))
 
-$(BUILD_DIR)%.o: $(SRC_DIR)%.asm
-	@mkdir -p $(BUILD_DIR)$(BOOT_SRC_DIR)
-	$(NASM) $(NASM_FLAGS) $< -o $@
+object_files := $(x86_64_asm_object_files) $(kernel_object_files)
 
-build_kernel: $(BOOT_OBJ_FILES)
+$(x86_64_asm_object_files): build/x86_64/%.o : x86_64/%.asm
+	mkdir -p $(dir $@) && \
+	$(NASM) $(NASM_FLAGS) $(patsubst build/x86_64/%.o, x86_64/%.asm, $@) -o $@
+
+$(kernel_object_files): build/kernel/%.o : kernel/%.c
+	mkdir -p $(dir $@) && \
+	$(CC) $(CFLAGS) $(patsubst build/kernel/%.o, kernel/%.c, $@) -o $@
+
+build_kernel: $(object_files)
 	$(LD) $(LD_FLAGS) $?
 	mv kernel.bin $(ISO_DIR)boot
 
@@ -34,7 +41,10 @@ build_iso: build_kernel
 QEMU=qemu-system-x86_64
 QEMU_FLAGS=-cdrom
 
-qemu: build_iso
+# -s -S -kernel
+# tap adapter 
+
+qemu: build_iso	
 	$(QEMU) $(QEMU_FLAGS) $(ISO_DIR)boot/kernel.iso
 
 clean: 
@@ -42,7 +52,6 @@ clean:
 	rm -f $(ISO_DIR)boot/kernel.iso
 
 install:
-	sudo apt update
 	sudo apt install xorriso
 	sudo apt install mtools
 	sudo apt install qemu-system-x86 
