@@ -1,3 +1,4 @@
+extern kmain
 global start
 extern kernel_main
 
