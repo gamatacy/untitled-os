@@ -102,7 +102,7 @@ void printf(const char* format, ...) {
                         print(digits_buf);
                         break;
                     case 'x':
-                        itoa(va_arg(varargs, int), digits_buf, 8);
+                        itoa(va_arg(varargs, int), digits_buf, 16);
                         print(digits_buf);
                         break;
                     case 's':
