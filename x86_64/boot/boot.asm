@@ -1,5 +1,6 @@
 extern kmain
 global start
+extern kernel_main
 
 section .text
 bits 32
@@ -34,7 +35,7 @@ start:
 
     ; move page table address to cr3
     ; using eax because we can move data to control register
-    ; onyl from another register
+    ; only from another register
     mov eax, p4_table
     mov cr3, eax
 
@@ -97,9 +98,10 @@ section .text
 bits 64
 long_mode_start:
 
-    ; mov rax, 0x2f592f412f4b2f4f
-    ; mov qword [0xb8000], rax
-    jmp kmain
+    call kernel_main
+
+    mov rax, 0x2f592f412f4b2f4f
+    mov qword [0xb8000], rax
 
     hlt
 
