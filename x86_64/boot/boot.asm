@@ -23,9 +23,10 @@ start:
     mul ecx
 
     ; huge page bit
+    or eax, 0b1 << 7
     ; present bit - page is currently in memory
     ; writable bit - page allowed to be written to
-    or eax, 0b10000011
+    or eax, 0b11
 
     mov [p2_table + ecx * 8], eax
 
@@ -41,13 +42,13 @@ start:
 
     ; enable Physical Address Extension
     mov eax, cr4
-    or eax, 0b100000
+    or eax, 1 << 5
     mov cr4, eax
 
     ; set the long mode bit
     mov ecx, 0xC0000080
     rdmsr
-    or eax, 0b100000000
+    or eax, 1 << 8
     wrmsr
 
     ; enable paging
