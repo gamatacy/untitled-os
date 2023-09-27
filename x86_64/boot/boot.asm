@@ -41,13 +41,13 @@ start:
 
     ; enable Physical Address Extension
     mov eax, cr4
-    or eax, 1 << 5
+    or eax, 0b100000
     mov cr4, eax
 
     ; set the long mode bit
     mov ecx, 0xC0000080
     rdmsr
-    or eax, 1 << 8
+    or eax, 0b100000000
     wrmsr
 
     ; enable paging
