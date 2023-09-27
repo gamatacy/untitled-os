@@ -23,10 +23,9 @@ start:
     mul ecx
 
     ; huge page bit
-    or eax, 0b1 << 7
     ; present bit - page is currently in memory
     ; writable bit - page allowed to be written to
-    or eax, 0b11
+    or eax, 0b1 << 7 | 0b11
 
     mov [p2_table + ecx * 8], eax
 
