@@ -49,7 +49,7 @@ qemu: build_iso
 
 clean: 
 	rm -rf $(BUILD_DIR)
-	rm -f $(ISO_DIR)boot/kernel.iso
+	rm -f $(ISO_DIR)boot/kernel.*
 
 install:
 	sudo apt install xorriso
