@@ -1,10 +1,16 @@
 extern kmain
 global start
 extern kernel_main
-
+extern check_multiboot
+extern check_cpuid
+extern check_long_mode
 section .text
 bits 32
 start:
+    mov esp, stack_top
+    call check_multiboot
+    call check_cpuid
+    call check_long_mode
     ; point first entry of p4 table to the first entry in p3 table
     mov eax, p3_table
     ; make first two bits 1
@@ -69,6 +75,7 @@ start:
 
     hlt
 
+
 section .bss
 align 4096
 
@@ -78,6 +85,9 @@ p3_table:
     resb 4096
 p2_table:
     resb 4096
+stack_bottom:
+    resb 4096*4
+stack_top:
 
 section .rodata
 gdt64:
@@ -97,11 +107,7 @@ gdt64:
 section .text
 bits 64
 long_mode_start:
-
+    mov rsp, stack_top
     call kernel_main
-
-    mov rax, 0x2f592f412f4b2f4f
-    mov qword [0xb8000], rax
-
     hlt
 
