@@ -4,14 +4,14 @@
 
 #include "idt.h"
 #include "interrupt_handlers.h"
-
+#include "../lib/include/memset.h"
 void setup_idt(){
     struct InterruptDescriptor64 idt[256]; // Создаем массив для 256 дескрипторов (для всех возможных прерываний)
     // Настройка регистра IDTR
     struct IDTR idtr;
     idtr.limit = sizeof(struct InterruptDescriptor64) * 256 - 1;
     idtr.base = (uint64_t)&idt;
-//    memset(&idt, 0, sizeof(struct InterruptDescriptor64) * 256);
+    memset(&idt, 0, sizeof(struct InterruptDescriptor64) * 256);
     // Настроим дескриптор IDT для деления на ноль (INT 0x0)
     idt[0].offset_1 = (uint16_t)((uintptr_t)divide_by_zero_handler);
     idt[0].selector = 0x08; // Селектор сегмента кода (обычно 0x08)

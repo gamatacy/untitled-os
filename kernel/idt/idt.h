@@ -4,7 +4,7 @@
 
 #ifndef UNTITLED_OS_IDT_H
 #define UNTITLED_OS_IDT_H
-#include "./stdint.h"
+#include "../lib/include/stdint.h"
 #define NUM_IDT_ENTRIES 256
 
 struct IDTR {
