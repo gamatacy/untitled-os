@@ -2,7 +2,7 @@ NASM=nasm
 NASM_FLAGS=-f elf64
 
 LD=ld
-LD_FLAGS=--nmagic --output=kernel.bin --script=$(LINKER)
+LD_FLAGS=--nmagic --script=$(LINKER)
 
 CC=gcc 
 CFLAGS=-Wall -c -ffreestanding
@@ -31,7 +31,7 @@ $(kernel_object_files): build/kernel/%.o : kernel/%.c
 	$(CC) $(CFLAGS) $(patsubst build/kernel/%.o, kernel/%.c, $@) -o $@
 
 build_kernel: $(object_files)
-	$(LD) $(LD_FLAGS) $?
+	$(LD) $(LD_FLAGS) --output=kernel.bin $?
 	mv kernel.bin $(ISO_DIR)boot
 
 build_iso: build_kernel
@@ -44,14 +44,16 @@ QEMU_FLAGS=-cdrom
 # -s -S -kernel
 # tap adapter 
 
-qemu: build_iso	
-	$(QEMU) $(QEMU_FLAGS) $(ISO_DIR)boot/kernel.iso
+qemu: build_iso
+	$(QEMU)  \
+	$(QEMU_FLAGS) \
+	$(ISO_DIR)boot/kernel.iso
 
 clean: 
 	rm -rf $(BUILD_DIR)
 	rm -f $(ISO_DIR)boot/kernel.*
 
 install:
-	sudo apt install xorriso
-	sudo apt install mtools
-	sudo apt install qemu-system-x86 
+	apt install xorriso
+	apt install mtools
+	apt install qemu-system-x86 
