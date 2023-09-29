@@ -2,8 +2,8 @@
 // Created by oleg on 28.09.23.
 //
 #include "interrupt_handlers.h"
-#include "../lib/vga.h"
+#include "../lib/include/print.h"
 void divide_by_zero_handler(){
-    print("AFjkAKLFJKLFJK\n");
+    print("division by zero\n");
     while (1);
 }
