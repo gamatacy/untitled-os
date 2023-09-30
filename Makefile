@@ -14,6 +14,8 @@ LINKER=x86_64/boot/linker.ld
 
 ISO_DIR=isofiles/
 
+BUILD_DIR=build
+
 x86_64_asm_source_files := $(shell find x86_64 -name *.asm)
 x86_64_asm_object_files := $(patsubst x86_64/%.asm, build/x86_64/%.o, $(x86_64_asm_source_files))
 

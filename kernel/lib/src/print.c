@@ -72,11 +72,11 @@ void itoa(int num, char* str, int radix) {
         num *= -1;
     }
 
-    while (num) {
+    do {
         int rem = (num % radix);
         str[i++] = (rem > 9 ? 'a' : '0') + rem;
         num /= radix;
-    }
+    } while (num);
 
     if (is_negative) str[i++] = '-';
     str[i] = 0;
@@ -103,6 +103,10 @@ void printf(const char* format, ...) {
                         break;
                     case 'x':
                         itoa(va_arg(varargs, int), digits_buf, 16);
+                        print(digits_buf);
+                        break;
+                    case 'b':
+                        itoa(va_arg(varargs, int), digits_buf, 2);
                         print(digits_buf);
                         break;
                     case 's':

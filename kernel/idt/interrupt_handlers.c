@@ -7,3 +7,8 @@ void divide_by_zero_handler(){
     print("division by zero\n");
     while (1);
 }
+
+void keyboard_handler() {
+    print("keyboard hit!\n");
+    while (1);
+}
