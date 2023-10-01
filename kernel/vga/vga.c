@@ -1,17 +1,12 @@
-#include "../include/stdint.h"
+
 #include <stdarg.h>
-#include "../include/vga.h"
+#include "vga.h"
 struct vga_char;
-struct vga_char* const VGA_ADDRESS = (void*) 0xB8000;
-static int line = 0;
-static int pos = 0;
+struct char_with_color* const VGA_ADDRESS = (void*) 0xB8000;
+static ship line = 0;
+static ship pos = 0;
 static enum vga_colors fg = VGA_COLOR_WHITE;
 static enum vga_colors bg = VGA_COLOR_BLACK;
-
-struct __attribute__((packed)) vga_char {
-    uship8 character;
-    uship8 color;
-};
 
 void set_fg(enum vga_colors _fg) {
     fg = _fg;
@@ -21,8 +16,8 @@ void set_bg(enum vga_colors _bg) {
     bg = _bg;
 }
 
-struct vga_char make_char(char value, enum vga_colors fg, enum vga_colors bg) {
-    struct vga_char res = {
+struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors bg) {
+    struct char_with_color res = {
         .character = value,
         .color = fg + (bg << 4)
     };
@@ -49,7 +44,7 @@ void print(const char *string)
     }
 }
 
-void reverse(char* str, int n) {
+void reverse(char* str, ship n) {
     int i = 0;
     int j = n - 1;
     while (i < j) {
@@ -59,8 +54,8 @@ void reverse(char* str, int n) {
     }
 }
 
-void itoa(int num, char* str, int radix) {
-    int i = 0;
+void itoa(ship num, char* str, ship radix) {
+    ship i = 0;
     int is_negative = 0;
     if (num < 0) {
         is_negative = 1;
@@ -115,7 +110,7 @@ void printf(const char* format, ...) {
 }
 
 void clear() {
-    for (int i = 0; i < VGA_HEIGHT * VGA_WIDTH; i++) {
+    for (ship i = 0; i < VGA_HEIGHT * VGA_WIDTH; i++) {
         (VGA_ADDRESS + i)->character=0;
         (VGA_ADDRESS + i)->color=0;
     }
