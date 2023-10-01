@@ -1,10 +1,5 @@
-//
-// Created by oleg on 30.09.23.
-//
-
-#ifndef UNTITLED_OS_VGA_H
-#define UNTITLED_OS_VGA_H
-#define VGA_ADRESS 0xB8000
+#ifndef UNTITLED_OS_PRINT_H
+#define UNTITLED_OS_PRINT_H
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_COLOR 7
@@ -26,4 +21,13 @@ enum vga_colors{
     VGA_COLOR_YELLOW = 14,
     VGA_COLOR_WHITE = 15
 };
-#endif //UNTITLED_OS_VGA_H
+void set_fg(enum vga_colors fg);
+void set_bg(enum vga_colors bg);
+struct vga_char make_char(char value, enum vga_colors fg, enum vga_colors bg);
+void putchar(char *c);
+void reverse(char* str, int n);
+void itoa(int num, char* str, int radix);
+void print(const char *string);
+void printf(const char* format, ...);
+void clear();
+#endif //UNTITLED_OS_PRINT_H

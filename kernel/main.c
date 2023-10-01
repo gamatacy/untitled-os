@@ -1,4 +1,4 @@
-#include "lib/include/print.h"
+#include "lib/include/vga.h"
 #include "idt/idt.h"
 int kernel_main(){
     setup_idt();
