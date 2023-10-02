@@ -1,6 +1,6 @@
-#include "../include/stdint.h"
+#include "../lib/include/stdint.h"
 #include <stdarg.h>
-#include "../include/print.h"
+#include "../lib/include/print.h"
 
 static struct vga_char *video = (void*)0xB8000;
 static const int LINE_COUNT = 25;
