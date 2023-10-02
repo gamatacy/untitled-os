@@ -6,7 +6,9 @@ int kernel_main(){
     set_bg(cyan);
     set_fg(white);
     print("Hello world!\nGoodbye world!\nChina-Russia os\n");
+    uint64_t big_num = 1<<63 - 1;
+    printf("%b\n", big_num);
     // int x = 10/0;
-    while(1);
-    return 0;
+    for (;;)
+        asm("hlt");
 }

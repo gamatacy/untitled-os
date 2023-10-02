@@ -6,6 +6,7 @@
 #define UNTITLED_OS_INTERRUPT_HANDLERS_H
 
 void divide_by_zero_handler();
+void keyboard_handler_wrapper();
 void keyboard_handler();
 
 #endif //UNTITLED_OS_INTERRUPT_HANDLERS_H

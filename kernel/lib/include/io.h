@@ -1,5 +1,8 @@
 #include "stdint.h"
 
+#ifndef IO_H
+#define IO_H
+
 static inline void outb(uint16_t port, uint8_t val) {
     asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) :"memory");
 }
@@ -24,3 +27,5 @@ static inline uint32_t inl(uint16_t port) {
     asm volatile ( "inl %1, %0" : "=a"(res) : "Nd"(port) : "memory");
     return res;
 }
+
+#endif // IO_H

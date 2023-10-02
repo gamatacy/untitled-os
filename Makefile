@@ -5,7 +5,7 @@ LD=ld
 LD_FLAGS=--nmagic --script=$(LINKER)
 
 CC=gcc 
-CFLAGS=-Wall -c -ffreestanding
+CFLAGS=-Wall -c -ffreestanding -mgeneral-regs-only
 
 GRUB=grub-mkrescue
 GRUB_FLAGS=-o
@@ -22,15 +22,18 @@ x86_64_asm_object_files := $(patsubst x86_64/%.asm, build/x86_64/%.o, $(x86_64_a
 kernel_source_files := $(shell find kernel -name *.c)
 kernel_object_files := $(patsubst kernel/%.c, build/kernel/%.o, $(kernel_source_files))
 
-object_files := $(x86_64_asm_object_files) $(kernel_object_files)
+kernel_asm_source_files := $(shell find kernel -name *.asm)
+kernel_asm_object_files := $(patsubst kernel/%.asm, build/kernel/%.o, $(kernel_asm_source_files))
 
-$(x86_64_asm_object_files): build/x86_64/%.o : x86_64/%.asm
-	mkdir -p $(dir $@) && \
-	$(NASM) $(NASM_FLAGS) $(patsubst build/x86_64/%.o, x86_64/%.asm, $@) -o $@
+object_files := $(x86_64_asm_object_files) $(kernel_object_files) $(kernel_asm_object_files)
 
-$(kernel_object_files): build/kernel/%.o : kernel/%.c
+build/%.o: %.asm
 	mkdir -p $(dir $@) && \
-	$(CC) $(CFLAGS) $(patsubst build/kernel/%.o, kernel/%.c, $@) -o $@
+	$(NASM) $(NASM_FLAGS) $< -o $@
+
+build/%.o: %.c
+	mkdir -p $(dir $@) && \
+	$(CC) $(CFLAGS) $< -o $@
 
 build_kernel: $(object_files)
 	$(LD) $(LD_FLAGS) --output=kernel.bin $?

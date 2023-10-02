@@ -74,7 +74,7 @@ void itoa(int num, char* str, int radix) {
 
     do {
         int rem = (num % radix);
-        str[i++] = (rem > 9 ? 'a' : '0') + rem;
+        str[i++] = (rem > 9 ? 'a' - 10 : '0') + rem;
         num /= radix;
     } while (num);
 
