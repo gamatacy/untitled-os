@@ -11,7 +11,10 @@ struct interrupt_frame;
 __attribute__((interrupt))  void divide_by_zero_handler(struct interrupt_frame* frame){
     clear();
     print("division by zero\n");
-    while (1);
+
+    while(1) {
+        asm ("hlt");
+    }
 }
 
 
