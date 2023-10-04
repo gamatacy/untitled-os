@@ -1,4 +1,3 @@
-
 #include <stdarg.h>
 #include "vga.h"
 struct vga_char;
@@ -24,7 +23,19 @@ struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors
     return res;
 }
 
+void scroll() {
+    for (int i=1; i<VGA_HEIGHT; i++) {
+        for (int j=0; j<VGA_WIDTH; j++) {
+            VGA_ADDRESS[(i-1)*VGA_WIDTH+j] = VGA_ADDRESS[i*VGA_WIDTH+j];
+        }
+    }
+    line = VGA_HEIGHT-1;
+    pos = 0;
+}
+
 void putchar(char *c) {
+    if (line >= VGA_HEIGHT) scroll();
+
     if (*c == '\n') {
         line++;
         pos = 0;
@@ -61,11 +72,13 @@ void itoa(ship num, char* str, ship radix) {
         is_negative = 1;
         num *= -1;
     }
-    while (num) {
+
+    do {
         int rem = (num % radix);
-        str[i++] = (rem > 9 ? 'a' : '0') + rem;
+        str[i++] = (rem > 9 ? 'a' - 10 : '0') + rem;
         num /= radix;
-    }
+    } while (num);
+
     if (is_negative) str[i++] = '-';
     str[i] = 0;
     reverse(str, i);
@@ -90,6 +103,10 @@ void printf(const char* format, ...) {
                         break;
                     case 'x':
                         itoa(va_arg(varargs, int), digits_buf, 16);
+                        print(digits_buf);
+                        break;
+                    case 'b':
+                        itoa(va_arg(varargs, int), digits_buf, 2);
                         print(digits_buf);
                         break;
                     case 's':
