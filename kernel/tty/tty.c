@@ -5,7 +5,7 @@
 #include "tty.h"
 #include "../lib/include/memset.h"
 
-static uship8 current_tty = 0;
+uship8 current_tty = 0;
 
 void init_tty() {
     for (uint8_t i=0; i<TERMINALS; i++) {
@@ -13,8 +13,6 @@ void init_tty() {
         terminals[i].line = 0;
         terminals[i].pos = 0;
         terminals[i].tty_id = i;
-
-        printf(&terminals[i], "TTY #%d\n", i);
     }
     current_tty = 0;
 }

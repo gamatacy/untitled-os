@@ -1,4 +1,3 @@
-
 #include <stdarg.h>
 #include "vga.h"
 #include "../tty/tty.h"
@@ -23,7 +22,19 @@ struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors
     return res;
 }
 
+void scroll(uint8_t tty_id) {
+    for (int i=1; i<VGA_HEIGHT; i++) {
+        for (int j=0; j<VGA_WIDTH; j++) {
+            terminals[tty_id].tty_buffer[(i-1)*VGA_WIDTH+j] = terminals[tty_id].tty_buffer[i*VGA_WIDTH+j];
+        }
+    }
+    terminals[tty_id].line = VGA_HEIGHT-1;
+    terminals[tty_id].pos = 0;
+}
+
 void putchar(uint8_t tty_id, char *c) {
+    if (terminals[tty_id].line >= VGA_HEIGHT) scroll(tty_id);
+
     if (*c == '\n') {
         terminals[tty_id].line++;
         terminals[tty_id].pos = 0;
@@ -60,11 +71,13 @@ void itoa(ship num, char* str, ship radix) {
         is_negative = 1;
         num *= -1;
     }
-    while (num) {
+
+    do {
         int rem = (num % radix);
-        str[i++] = (rem > 9 ? 'a' : '0') + rem;
+        str[i++] = (rem > 9 ? 'a' - 10 : '0') + rem;
         num /= radix;
-    }
+    } while (num);
+
     if (is_negative) str[i++] = '-';
     str[i] = 0;
     reverse(str, i);
@@ -89,6 +102,10 @@ void printf(uint8_t tty_id, const char* format, ...) {
                         break;
                     case 'x':
                         itoa(va_arg(varargs, int), digits_buf, 16);
+                        print(tty_id, digits_buf);
+                        break;
+                    case 'b':
+                        itoa(va_arg(varargs, int), digits_buf, 2);
                         print(tty_id, digits_buf);
                         break;
                     case 's':
