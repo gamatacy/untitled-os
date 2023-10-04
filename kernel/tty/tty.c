@@ -18,6 +18,6 @@ void init_tty() {
 }
 
 void switch_tty(uint8_t tty_id) {
-    flush(&terminals[tty_id]);
+    flush(tty_id);
     current_tty = tty_id;
 }

@@ -6,7 +6,7 @@
 #define UNTITLED_OS_TTY_H
 #include "../vga/vga.h"
 #include "../lib/include/stdint.h"
-#define TERMINALS 8
+#define TERMINALS 12
 
 struct tty {
     struct char_with_color tty_buffer[VGA_HEIGHT * VGA_WIDTH];

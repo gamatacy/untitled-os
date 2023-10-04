@@ -6,6 +6,7 @@
 #include "../pic/pic.h"
 #include "../vga/vga.h"
 #include "../tty/tty.h"
+#define F1 0x3B
 
 struct interrupt_frame;
 
@@ -30,7 +31,12 @@ __attribute__((interrupt)) void keyboard_handler(struct interrupt_frame* frame) 
     // printf("Flags: %b\n", get_flags());
     while (inb(0x64) & 1) {
         uint8_t res = inb(0x60);
-        printf(current_tty, "%x ", res);
+
+        if (res >= F1 && res < F1 + TERMINALS) {
+            switch_tty(res - F1);
+        } else {
+            printf(current_tty, "%x ", res);
+        }
     }
     print(current_tty, "\n");
     outb(PIC1_COMMAND, PIC_EOI);
