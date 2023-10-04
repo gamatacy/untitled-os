@@ -31,7 +31,8 @@ struct __attribute__((packed)) char_with_color {
 void set_fg(enum vga_colors fg);
 void set_bg(enum vga_colors bg);
 void itoa(int num, char* str, int radix);
-void print(const char *string);
-void printf(const char* format, ...);
-void clear();
+void print(uint8_t tty_id, const char *string);
+void printf(uint8_t tty_id, const char* format, ...);
+void clear(uint8_t tty_id);
+void flush(uint8_t tty_id);
 #endif //UNTITLED_OS_PRINT_H

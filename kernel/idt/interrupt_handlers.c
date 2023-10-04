@@ -3,7 +3,9 @@
 //
 #include "interrupt_handlers.h"
 #include "../vga/vga.h"
+#include "../tty/tty.h"
+
 void divide_by_zero_handler(){
-    print("division by zero\n");
+    print(&terminals[current_tty], "division by zero\n");
     while (1);
 }
