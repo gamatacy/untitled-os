@@ -22,6 +22,9 @@ void setup_idt(){
     idtr.limit = sizeof(struct InterruptDescriptor64) * MAX_INTERRUPTS - 1;
     idtr.base = (uint64_t)&idt;
     memset(&idt, 0, sizeof(struct InterruptDescriptor64) * MAX_INTERRUPTS);
+    for (int i = 0; i < MAX_INTERRUPTS; ++i) {
+        make_interrupt(idt, i, (uintptr_t)default_handler);
+    }
     // Настроим дескриптор IDT для деления на ноль (INT 0x0)
     make_interrupt(idt, 0, (uintptr_t)divide_by_zero_handler);
     make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
