@@ -17,6 +17,6 @@ struct tty_structure{
 };
 
 void init_tty();
-void set_tty(ship terminal);
+void set_tty(uship8 terminal);
 
 #endif //UNTITLED_OS_TTY_H

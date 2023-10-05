@@ -119,12 +119,8 @@ void clear_vga() {
     pos = 0;
 }
 
-int write_buffer(struct char_with_color *tty_buffer, int size) {
-    if(size>VGA_HEIGHT * VGA_WIDTH){
-        return 1;
-    }
-    for (ship i = 0; i < size; i++) {
+void write_buffer(struct char_with_color *tty_buffer) {
+    for (ship i = 0; i < VGA_HEIGHT * VGA_WIDTH; i++) {
         VGA_ADDRESS[i] = tty_buffer[i];
     }
-    return 0;
 }

@@ -36,5 +36,5 @@ void itoa(ship num, char* str, ship radix);
 void print(const char *string);
 void printf(const char* format, ...);
 void clear_vga();
-int write_buffer(struct char_with_color *tty_buffer, int size);
+void write_buffer(struct char_with_color *tty_buffer);
 #endif //UNTITLED_OS_PRINT_H
