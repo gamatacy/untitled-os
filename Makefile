@@ -51,7 +51,7 @@ QEMU_FLAGS=-cdrom
 # -s -S -kernel
 # tap adapter 
 
-qemu: build_iso
+qemu: $(ISO_DIR)/kernel.iso
 	$(QEMU)  \
 	$(QEMU_FLAGS) \
 	$(ISO_DIR)/kernel.iso
