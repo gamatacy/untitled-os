@@ -27,7 +27,7 @@ typedef signed short ship16;
 typedef signed int ship32;
 typedef signed long long ship64;
 typedef unsigned long long size_ship;
-typedef unsigned long long ushipprt_t;
+typedef unsigned long long ushipptr_t;
 typedef int ship;
 
 
