@@ -7,7 +7,10 @@
 
 uship8 current_tty = 0;
 
+struct tty terminals[TERMINALS];
+
 void init_tty() {
+
     for (uint8_t i=0; i<TERMINALS; i++) {
         memset(terminals[i].tty_buffer, 0, sizeof(terminals[i].tty_buffer));
         terminals[i].line = 0;

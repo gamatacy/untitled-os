@@ -14,8 +14,9 @@ struct tty {
     uint8_t line;
     uint8_t pos;
 };
+
 extern uint8_t current_tty;
-struct tty terminals[TERMINALS];
+extern struct tty terminals[TERMINALS];
 
 void init_tty();
 void switch_tty(uint8_t tty_id);
