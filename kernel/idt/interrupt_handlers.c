@@ -12,8 +12,7 @@ struct interrupt_frame;
 
 __attribute__((interrupt))  void divide_by_zero_handler(struct interrupt_frame* frame){
     clear_current_tty();
-    print(current_tty, "division by zero\n");
-    flush(current_tty);
+    print("division by zero\n");
 
     while(1) {
         asm ("hlt");
@@ -32,13 +31,13 @@ __attribute__((interrupt)) void keyboard_handler(struct interrupt_frame* frame) 
     while (inb(0x64) & 1) {
         uint8_t res = inb(0x60);
 
-        if (res >= F1 && res < F1 + TERMINALS) {
-            switch_tty(res - F1);
+        if (res >= F1 && res < F1 + TERMINALS_NUMBER) {
+            set_tty(res - F1);
         } else {
-            printf(current_tty, "%x ", res);
+            printf("%x ", res);
         }
     }
-    print(current_tty, "\n");
+    print("\n");
     outb(PIC1_COMMAND, PIC_EOI);
     // printf("Flags: %b\n", get_flags());
 }

@@ -30,11 +30,7 @@ struct __attribute__((packed)) char_with_color {
     uship8 color;
 };
 
-void set_fg(enum vga_colors fg);
-void set_bg(enum vga_colors bg);
-void itoa(ship num, char* str, ship radix);
-void print(const char *string);
-void printf(const char* format, ...);
+
 void clear_vga();
 void write_buffer(struct char_with_color *tty_buffer);
 #endif //UNTITLED_OS_PRINT_H
