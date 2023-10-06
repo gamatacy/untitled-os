@@ -5,7 +5,6 @@
 int kernel_main(){
     setup_idt();
     init_tty();
-
     for (uship8 i=0; i < TERMINALS; i++) {
         printf(i, "TTY %d\n", i);
     }

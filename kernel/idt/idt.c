@@ -6,6 +6,7 @@
 #include "interrupt_handlers.h"
 #include "../lib/include/memset.h"
 #include "../pic/pic.h"
+
 #define MAX_INTERRUPTS 256
 void make_interrupt(struct InterruptDescriptor64* idt, ship array_index, uintptr_t handler){
     if(array_index>=MAX_INTERRUPTS)return;

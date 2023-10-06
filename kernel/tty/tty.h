@@ -8,7 +8,7 @@
 #include "../lib/include/stdint.h"
 struct tty_structure{
     struct char_with_color tty_buffer[VGA_HEIGHT * VGA_WIDTH];
-    ship8 tty_id;
+    uship8 tty_id;
     uint8_t line;
     uint8_t pos;
     enum vga_colors bg;
@@ -17,5 +17,6 @@ struct tty_structure{
 
 void init_tty();
 void set_tty(uship8 terminal);
-
+void clear_current_tty();
+uship8 get_current_tty();
 #endif //UNTITLED_OS_TTY_H

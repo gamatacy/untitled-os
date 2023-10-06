@@ -11,7 +11,7 @@
 struct interrupt_frame;
 
 __attribute__((interrupt))  void divide_by_zero_handler(struct interrupt_frame* frame){
-    clear(current_tty);
+    clear_current_tty();
     print(current_tty, "division by zero\n");
     flush(current_tty);
 

@@ -34,3 +34,6 @@ void clear_current_tty(){
     active_tty->line = 0;
     clear_vga();
 }
+uship8 get_current_tty(){
+    return active_tty->tty_id;
+}
