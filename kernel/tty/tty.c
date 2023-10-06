@@ -55,6 +55,16 @@ void reverse(char *str, ship n) {
     }
 }
 
+void scroll() {
+    for (int i=1; i<VGA_HEIGHT; i++) {
+        for (int j=0; j<VGA_WIDTH; j++) {
+            active_tty->tty_buffer[(i-1)*VGA_WIDTH+j] = active_tty->tty_buffer[i*VGA_WIDTH+j];
+        }
+    }
+    active_tty->line = VGA_HEIGHT-1;
+    active_tty->pos = 0;
+}
+
 struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors bg) {
     struct char_with_color res = {
             .character = value,
@@ -64,7 +74,7 @@ struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors
 }
 
 void putchar(char *c) {
-//    if (active_tty->line >= VGA_HEIGHT) scroll(tty_id);
+    if (active_tty->line >= VGA_HEIGHT) scroll();
 
     if (*c == '\n') {
         active_tty->line++;
@@ -146,3 +156,4 @@ void printf(const char* format, ...) {
         format++;
     }
 }
+
