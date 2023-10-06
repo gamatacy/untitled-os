@@ -42,5 +42,5 @@ __attribute__((interrupt)) void keyboard_handler(struct interrupt_frame* frame) 
     // printf("Flags: %b\n", get_flags());
 }
 __attribute__((interrupt)) void default_handler(struct interrupt_frame* frame) {
-    print(current_tty, "unknown interrupt\n");
+    print("unknown interrupt\n");
 }
