@@ -9,7 +9,6 @@
 struct tty_structure{
     struct char_with_color tty_buffer[VGA_HEIGHT * VGA_WIDTH];
     ship8 tty_id;
-    size_ship size;
     uint8_t line;
     uint8_t pos;
     enum vga_colors bg;
