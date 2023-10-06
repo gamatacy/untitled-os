@@ -14,8 +14,6 @@ void set_bg(enum vga_colors _bg) {
     active_tty->bg = _bg;
 }
 
-
-
 void init_tty(){
     memset(&tty_terminals, 0, sizeof(struct tty_structure) * TERMINALS_NUMBER);
     for (ship i = 0; i < TERMINALS_NUMBER; ++i) {
@@ -46,7 +44,6 @@ void clear_current_tty(){
 uship8 get_current_tty(){
     return active_tty->tty_id;
 }
-
 
 void reverse(char *str, ship n) {
     int i = 0;
@@ -84,6 +81,7 @@ void print(const char *string) {
     while (*string != 0) {
         putchar(string++);
     }
+    write_buffer(active_tty->tty_buffer);
 }
 
 void itoa(ship num, char* str, ship radix) {
@@ -138,10 +136,12 @@ void printf(const char* format, ...) {
                         break;
                     default:
                         putchar("#");
+                        write_buffer(active_tty->tty_buffer);
                 }
                 break;
             default:
                 putchar(format);
+                write_buffer(active_tty->tty_buffer);
         }
         format++;
     }
