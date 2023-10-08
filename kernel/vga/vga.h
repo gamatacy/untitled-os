@@ -5,6 +5,8 @@
 #define VGA_HEIGHT 25
 #define VGA_COLOR 7
 #include "../lib/include/stdint.h"
+#define DEFAULT_BG_COLOR VGA_COLOR_WHITE
+#define DEFAULT_FG_COLOR VGA_COLOR_BLACK
 enum vga_colors{
     VGA_COLOR_BLACK = 0,
     VGA_COLOR_BLUE = 1,
@@ -28,11 +30,7 @@ struct __attribute__((packed)) char_with_color {
     uship8 color;
 };
 
-void set_fg(enum vga_colors fg);
-void set_bg(enum vga_colors bg);
-void itoa(int num, char* str, int radix);
-void print(uint8_t tty_id, const char *string);
-void printf(uint8_t tty_id, const char* format, ...);
-void clear(uint8_t tty_id);
-void flush(uint8_t tty_id);
+
+void clear_vga();
+void write_buffer(struct char_with_color *tty_buffer);
 #endif //UNTITLED_OS_PRINT_H

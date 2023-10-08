@@ -5,13 +5,10 @@
 int kernel_main(){
     setup_idt();
     init_tty();
-    
-    for (uship8 i=0; i < TERMINALS; i++) {
-        printf(i, "TTY %d\n", i);
+    for (uship8 i=0; i < TERMINALS_NUMBER; i++) {
+        printf("TTY %d\n", i);
     }
-    print(current_tty, "$ \n");
-    flush(current_tty);
-
+    print("$ \n");
     while(1);
     return 0;
-}   
+}
