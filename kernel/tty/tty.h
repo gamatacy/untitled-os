@@ -16,6 +16,7 @@ struct tty_structure{
     enum vga_colors fg;
 };
 
+
 void init_tty();
 void set_tty(uship8 terminal);
 void set_fg(enum vga_colors fg);

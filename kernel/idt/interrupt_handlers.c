@@ -37,7 +37,9 @@ __attribute__((interrupt)) void keyboard_handler(struct interrupt_frame* frame) 
             printf("%x ", res);
         }
     }
+
     print("\n");
+
     outb(PIC1_COMMAND, PIC_EOI);
     // printf("Flags: %b\n", get_flags());
 }
