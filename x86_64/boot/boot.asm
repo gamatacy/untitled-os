@@ -110,4 +110,3 @@ long_mode_start:
     mov rsp, stack_top
     call kernel_main
     hlt
-
