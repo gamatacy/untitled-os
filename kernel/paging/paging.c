@@ -75,7 +75,7 @@ void init_paging() {
     for (int i = 0; i < ENTRIES_COUNT; ++i) {
         p1_s = decode_page_entry(&p1.table[i]);
 
-        init_entry(&p1_s, &physical_memory.table[i]);
+        init_entry(&p1_s, 0x1000);//&physical_memory.table[i]);
 
         p1.table[i] = encode_page_entry(p1_s);
     }
@@ -83,6 +83,10 @@ void init_paging() {
     p4.table[0] = encode_page_entry(p4_s);
     p3.table[0] = encode_page_entry(p4_s);
     p2.table[0] = encode_page_entry(p4_s);
+
+    struct page_entry p;
+    init_entry(&p, 0);
+    physical_memory.table[0] = encode_page_entry(p);
 
     void *p4_table_p = &p4.table[0];
 
