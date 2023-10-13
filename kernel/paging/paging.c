@@ -84,8 +84,8 @@ void init_paging() {
     p3.table[0] = encode_page_entry(p4_s);
     p2.table[0] = encode_page_entry(p4_s);
 
-    int *shit = &p4.table[0];
+    void *p4_table_p = &p4.table[0];
 
-    asm volatile ("movq %0, %%rax; movq %%rax, %%cr0;"::"r"((uint64_t) shit));
-    
+    asm volatile ("movq %0, %%rax; movq %%rax, %%cr3;"::"r"((uint64_t) p4_table_p));
+
 }
