@@ -12,8 +12,6 @@ start:
     call check_long_mode
     jmp page_tables_setup
 
-
-
 page_tables_setup:
     ; point first entry of p4 table to the first entry in p3 table
     mov eax, p3_table
@@ -25,19 +23,22 @@ page_tables_setup:
     mov eax, p2_table
     or eax, 0b11
     mov dword [p3_table + 0], eax
-    mov ecx, 0 ; counter
 
-.map_p2_table:
-    mov eax, 0x200000 ; 2MiB
+    mov eax, p1_table
+    or eax, 0b11
+    mov dword [p2_table + 0], eax
+
+    mov ecx, 0 ; counter
+.map_p1_table:
+    mov eax, 0x1000  ; Physical address for this page
     mul ecx
-    ; huge page bit
-    ; present bit - page is currently in memory
-    ; writable bit - page allowed to be written to
-    or eax, 0b1 << 7 | 0b11
-    mov [p2_table + ecx * 8], eax
+    or eax, 0b11       ; Set Present (P), Read/Write (R/W), and User (U/S) flags
+    mov [p1_table + ecx * 8], eax
     inc ecx
-    cmp ecx, 512
-    jne .map_p2_table
+    cmp ecx, 1024        ; 1024 entries in a page table
+    jl .map_p1_table
+
+
 
 .setup_page_register:
     ; move page table address to cr3
@@ -85,6 +86,8 @@ p3_table:
     resb 4096
 p2_table:
     resb 4096
+p1_table:
+    resb 4096
 stack_bottom:
     resb 4096*4
 stack_top:
@@ -108,6 +111,7 @@ section .text
 bits 64
 long_mode_start:
     mov rsp, stack_top
-    call kernel_main
-    hlt
 
+    call kernel_main
+
+    hlt
