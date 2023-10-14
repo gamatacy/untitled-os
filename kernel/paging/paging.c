@@ -41,55 +41,19 @@ struct page_entry decode_page_entry(page_entry_raw raw) {
     return entry;
 }
 
-void init_entry(struct page_entry *entry, uint64_t addr) {
-
-    entry->p = 1;
-    entry->rw = 1;
-    entry->us = 0;
-    entry->pwt = 1;
-    entry->pcd = 0;
-    entry->a = 0;
-    entry->d = 0;
-    entry->rsvd = 0;
-    entry->ign1 = 0;
-    entry->address = addr;
-    entry->ign2 = 0;
-    entry->xd = 0;
-
-}
-
-void init_paging() {
-
-    struct page_entry_t p4, p3, p2, p1;
-    struct page_entry_t physical_memory;
-    struct page_entry p4_s, p3_s, p2_s, p1_s;
-
-    p4_s = decode_page_entry(p4.table[0]);
-    p3_s = decode_page_entry(p3.table[0]);
-    p2_s = decode_page_entry(p2.table[0]);
-
-    init_entry(&p4_s, &p3.table[0]);
-    init_entry(&p3_s, &p2.table[0]);
-    init_entry(&p2_s, &p1.table[0]);
-
-    for (int i = 0; i < ENTRIES_COUNT; ++i) {
-        p1_s = decode_page_entry(&p1.table[i]);
-
-        init_entry(&p1_s, 0x1000);//&physical_memory.table[i]);
-
-        p1.table[i] = encode_page_entry(p1_s);
-    }
-
-    p4.table[0] = encode_page_entry(p4_s);
-    p3.table[0] = encode_page_entry(p4_s);
-    p2.table[0] = encode_page_entry(p4_s);
-
-    struct page_entry p;
-    init_entry(&p, 0);
-    physical_memory.table[0] = encode_page_entry(p);
-
-    void *p4_table_p = &p4.table[0];
-
-    asm volatile ("movq %0, %%rax; movq %%rax, %%cr3;"::"r"((uint64_t) p4_table_p));
-
-}
+//void init_entry(struct page_entry *entry, uint64_t addr) {
+//
+//    entry->p = 1;
+//    entry->rw = 1;
+//    entry->us = 0;
+//    entry->pwt = 1;
+//    entry->pcd = 0;
+//    entry->a = 0;
+//    entry->d = 0;
+//    entry->rsvd = 0;
+//    entry->ign1 = 0;
+//    entry->address = addr;
+//    entry->ign2 = 0;
+//    entry->xd = 0;
+//
+//}

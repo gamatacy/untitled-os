@@ -12,8 +12,6 @@ start:
     call check_long_mode
     jmp page_tables_setup
 
-
-
 page_tables_setup:
     ; point first entry of p4 table to the first entry in p3 table
     mov eax, p3_table

@@ -1,7 +1,6 @@
 #include "vga/vga.h"
 #include "idt/idt.h"
 #include "tty/tty.h"
-#include "paging/paging.h"
 
 int kernel_main(){
 
