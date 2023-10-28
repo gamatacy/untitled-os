@@ -1,5 +1,6 @@
 //
-// Created by oleg on 27.09.23.
+// Created by ShipOS developers on 28.10.23.
+// Copyright (c) 2023 SHIPOS. All rights reserved.
 //
 
 #ifndef STDINT_H

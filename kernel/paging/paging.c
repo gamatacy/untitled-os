@@ -1,3 +1,9 @@
+//
+// Created by ShipOS developers on 28.10.23.
+// Copyright (c) 2023 SHIPOS. All rights reserved.
+//
+
+
 #include "paging.h"
 
 page_entry_raw encode_page_entry(struct page_entry entry) {
