@@ -7,16 +7,15 @@
 #ifndef UNTITLED_OS_PROC_H
 #define UNTITLED_OS_PROC_H
 #define size_t pid_t
-typedef struct proc_struct proc_struct
-struct proc_struct{
+struct proc{
     unsigned long state;
     int prio;
     unsigned long policy;
     struct proc *parent;
 };
 
-proc_struct createThread();
+struct proc createThread();
 int exitThread();
-proc_struct getThreadStruct();
+struct proc getThreadStruct();
 void passiveSleep();
 #endif //UNTITLED_OS_PROC_H
