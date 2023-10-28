@@ -6,14 +6,15 @@
 
 #ifndef UNTITLED_OS_PROC_H
 #define UNTITLED_OS_PROC_H
-#define size_t pid_t
-#include "../threads/thread.h"
+
+#include "thread.h"
+
 
 struct proc{
-    unsigned long policy;
     struct proc *parent;
     struct threadCtx *threads;
 };
-
+struct proc init_first_proc();
+struct proc fork();
 
 #endif //UNTITLED_OS_PROC_H
