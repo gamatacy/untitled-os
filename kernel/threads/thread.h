@@ -8,15 +8,15 @@
 #define UNTITLED_OS_THREADS_H
 #define MAXTHREADS 100
 
-struct threadCtx all_threads[100];
-
-struct threadCtx {
+struct thread_ctx {
     unsigned long state;
     int prio;
 };
 
-struct proc createThread();
-int exitThread();
-struct proc getThreadStruct();
-void passiveSleep();
+struct thread_ctx all_threads[100];
+
+struct proc create_thread();
+int exit_thread();
+struct proc get_thread_struct();
+void passive_sleep();
 #endif //UNTITLED_OS_THREADS_H
