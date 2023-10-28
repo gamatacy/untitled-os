@@ -5,3 +5,6 @@
 
 
 #include "thread.h"
+struct threadCtx{
+    
+};

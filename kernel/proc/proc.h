@@ -6,5 +6,12 @@
 
 #ifndef UNTITLED_OS_PROC_H
 #define UNTITLED_OS_PROC_H
+#define size_t pid_t
+struct proc{
+    unsigned long state;
+    int prio;
+    unsigned long policy;
+    struct proc *parent;
 
+};
 #endif //UNTITLED_OS_PROC_H
