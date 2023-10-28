@@ -6,5 +6,17 @@
 
 #ifndef UNTITLED_OS_THREADS_H
 #define UNTITLED_OS_THREADS_H
+#define MAXTHREADS 100
 
+struct threadCtx all_threads[100];
+
+struct threadCtx {
+    unsigned long state;
+    int prio;
+};
+
+struct proc createThread();
+int exitThread();
+struct proc getThreadStruct();
+void passiveSleep();
 #endif //UNTITLED_OS_THREADS_H

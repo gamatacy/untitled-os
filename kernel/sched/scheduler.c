@@ -3,7 +3,7 @@
 // Copyright (c) 2023 SHIPOS. All rights reserved.
 //
 
-#ifndef UNTITLED_OS_SHEDULER_H
-#define UNTITLED_OS_SHEDULER_H
+#include "scheduler.h"
+void scheduler(){
 
-#endif //UNTITLED_OS_SHEDULER_H
+}
