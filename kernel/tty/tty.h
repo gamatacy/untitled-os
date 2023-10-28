@@ -8,6 +8,7 @@
 #include "../vga/vga.h"
 #include "../lib/include/stdint.h"
 #define TERMINALS_NUMBER 7
+#define struct tty_structure tty_structure
 struct tty_structure{
     struct char_with_color tty_buffer[VGA_HEIGHT * VGA_WIDTH];
     uship8 tty_id;
