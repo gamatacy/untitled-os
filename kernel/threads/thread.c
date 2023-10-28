@@ -5,3 +5,17 @@
 
 
 #include "thread.h"
+
+
+//struct proc create_thread(){
+//
+//};
+//int exit_thread(){
+//
+//};
+//struct proc get_thread_struct(){
+//    return 0;
+//};
+void passive_sleep(){
+
+};
