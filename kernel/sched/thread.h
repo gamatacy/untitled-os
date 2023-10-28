@@ -1,4 +1,4 @@
-//
+    //
 // Created by ShipOS developers on 28.10.23.
 // Copyright (c) 2023 SHIPOS. All rights reserved.
 //
@@ -22,7 +22,7 @@ struct thread_ctx {
     int prio;
 };
 
-struct thread_ctx all_threads[MAXTHREADS];
+//struct thread_ctx all_threads[MAXTHREADS];
 
 struct thread_ctx create_thread();
 int exit_thread(int status);

@@ -29,6 +29,8 @@ void setup_idt(){
     // Настроим дескриптор IDT для деления на ноль (INT 0x0)
     make_interrupt(idt, 0, (uintptr_t)divide_by_zero_handler);
     make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
+        make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
+
     // Загрузка IDTR
     asm volatile ("lidt %0" : : "m"(idtr));
 

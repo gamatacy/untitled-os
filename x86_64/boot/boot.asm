@@ -63,6 +63,8 @@ page_tables_setup:
     or eax, 1 << 16
     mov cr0, eax
 
+
+
 .update_lgdr_register:
     lgdt [gdt64.pointer]
 

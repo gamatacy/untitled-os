@@ -20,7 +20,7 @@ struct thread_ctx create_thread(){
     struct thread_ctx new_thread;
     new_thread.pid = generate_pid();
     new_thread.state = RUNNABLE;
-    all_threads[pid] = new_thread;
+    //all_threads[pid] = new_thread;
     return new_thread;
 }
 //int exit_thread(){
