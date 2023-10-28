@@ -1,8 +1,8 @@
-global init_plt
+global init_pit
 section .text
 align 4
 
-init_plt:
+init_pit:
     mov al, 00110100b 
     out 0x43, al    ;tell the PIT which channel we're setting
     mov ax, 61680
