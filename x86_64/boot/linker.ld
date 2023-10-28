@@ -5,7 +5,7 @@ SECTIONS{
 
     .boot :
     {
-        *(.header)
+        *(.header_start)
     }
 
     .text :
@@ -13,4 +13,5 @@ SECTIONS{
         *(.text)
     }
 
+    PROVIDE(end = .);
 }
