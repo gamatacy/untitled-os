@@ -8,11 +8,10 @@
 #include "tty/tty.h"
 #include "memlayout.h"
 
-int kernel_main(){
+int kernel_main() {
     setup_idt();
     init_tty();
-    
-    for (uship8 i=0; i < TERMINALS_NUMBER; i++) {
+    for (uship8 i = 0; i < TERMINALS_NUMBER; i++) {
         set_tty(i);
         printf("TTY %d\n", i);
     }
@@ -20,6 +19,6 @@ int kernel_main(){
     print("$ \n");
     printf("Kernel end at address: %d\n", KEND);
     printf("Kernel size: %d\n", KEND - KSTART);
-    while(1);
+    while (1);
     return 0;
 }
