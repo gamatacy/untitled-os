@@ -1,3 +1,3 @@
 ata0-master: type=cdrom, path=isofiles/kernel.iso, status=inserted
 boot: cdrom
-display_library: win32, options="gui_debug"
+# display_library: win32, options="gui_debug"

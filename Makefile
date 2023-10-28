@@ -5,7 +5,7 @@ LD=ld
 LD_FLAGS=--nmagic --script=$(LINKER)
 
 CC=gcc 
-CFLAGS=-Wall -c -g -ffreestanding -mgeneral-regs-only
+CFLAGS=-Wall -c -ggdb -ffreestanding -mgeneral-regs-only
 
 GRUB=grub-mkrescue
 GRUB_FLAGS=-o
@@ -48,6 +48,13 @@ build_iso: $(ISO_DIR)/kernel.iso
 QEMU=qemu-system-x86_64
 QEMU_FLAGS=-cdrom
 
+# try to generate a unique GDB port
+GDBPORT = $(shell expr `id -u` % 5000 + 25000)
+# QEMU's gdb stub command line changed in 0.11
+QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
+	then echo "-gdb tcp::$(GDBPORT)"; \
+	else echo "-s -p $(GDBPORT)"; fi)
+
 # -s -S -kernel
 # tap adapter 
 
@@ -55,6 +62,13 @@ qemu: $(ISO_DIR)/kernel.iso
 	$(QEMU)  \
 	$(QEMU_FLAGS) \
 	$(ISO_DIR)/kernel.iso
+
+.gdbinit: .gdbinit.tmpl
+	sed "s/:1234/:$(GDBPORT)/" < $^ > $@
+
+qemu-gdb: $(ISO_DIR)/kernel.iso .gdbinit
+	@echo "*** Now run 'gdb' in another window." 1>&2
+	$(QEMU) $(QEMU_FLAGS) $(ISO_DIR)/kernel.iso -S $(QEMUGDB)
 
 clean: 
 	rm -rf $(BUILD_DIR)
