@@ -12,7 +12,7 @@
 
 typedef size_ship pid_t;
 
-enum cpu_state {
+enum proc_state {
     NEW = 0,
     RUNNABLE,
     ON_CPU,
@@ -22,7 +22,7 @@ enum cpu_state {
 
 struct proc {
     pid_t pid;
-    enum cpu_state state;
+    enum proc_state state;
     struct proc *parent;
 };
 
