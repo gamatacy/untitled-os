@@ -35,7 +35,7 @@ page_tables_setup:
     or eax, 0b11       ; Set Present (P), Read/Write (R/W), and User (U/S) flags
     mov [p1_table + ecx * 8], eax
     inc ecx
-    cmp ecx, 1024        ; 1024 entries in a page table
+    cmp ecx, 512        ; 512 entries in a page table
     jl .map_p1_table
 
 
@@ -62,6 +62,8 @@ page_tables_setup:
     or eax, 1 << 31
     or eax, 1 << 16
     mov cr0, eax
+
+
 
 .update_lgdr_register:
     lgdt [gdt64.pointer]

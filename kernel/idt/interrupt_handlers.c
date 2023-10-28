@@ -10,7 +10,7 @@
 
 struct interrupt_frame;
 
-__attribute__((interrupt))  void divide_by_zero_handler(struct interrupt_frame* frame){
+__attribute__((interrupt)) void divide_by_zero_handler(struct interrupt_frame* frame){
     clear_current_tty();
     print("division by zero\n");
 
@@ -45,4 +45,10 @@ __attribute__((interrupt)) void keyboard_handler(struct interrupt_frame* frame) 
 }
 __attribute__((interrupt)) void default_handler(struct interrupt_frame* frame) {
     print("unknown interrupt\n");
+}
+
+__attribute__((interrupt)) void timer_interrupt(struct interrupt_frame* frame) {
+    print("penis\n");
+    outb(PIC1_COMMAND, PIC_EOI);
+
 }

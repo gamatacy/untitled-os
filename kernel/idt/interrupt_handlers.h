@@ -8,6 +8,7 @@
 void divide_by_zero_handler();
 void keyboard_handler_wrapper();
 void keyboard_handler();
+void timer_interrupt();
 void default_handler();
 
 #endif //UNTITLED_OS_INTERRUPT_HANDLERS_H
