@@ -1,3 +1,9 @@
+//
+// Created by ShipOS developers on 28.10.23.
+// Copyright (c) 2023 SHIPOS. All rights reserved.
+//
+
+
 #include "paging.h"
 
 page_entry_raw encode_page_entry(struct page_entry entry) {
@@ -13,7 +19,7 @@ page_entry_raw encode_page_entry(struct page_entry entry) {
     raw |= (entry.d & 0x1) << 6;
     raw |= (entry.rsvd & 0x1) << 7;
     raw |= (entry.ign1 & 0xF) << 8;
-    raw |= (entry.address & 0xFFFFFFFFF) << 12;
+    raw |= (entry.address & 0xfffff000); // << 12;
     raw |= (entry.ign2 & 0x7FFF) << 48;
     raw |= (entry.xd & 0x1) << 63;
 
