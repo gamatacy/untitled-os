@@ -6,6 +6,7 @@
 #include "vga/vga.h"
 #include "idt/idt.h"
 #include "tty/tty.h"
+#include "memlayout.h"
 
 int kernel_main(){
     setup_idt();
@@ -16,6 +17,8 @@ int kernel_main(){
     }
     set_tty(0);
     print("$ \n");
+    printf("Kernel end at address: %d\n", KEND);
+    printf("Kernel size: %d\n", KEND - KSTART);
     while(1);
     return 0;
 }
