@@ -5,3 +5,7 @@
 
 
 #include "proc.h"
+
+//struct proc init_first_proc(){
+//
+//};
