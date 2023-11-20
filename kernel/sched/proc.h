@@ -12,19 +12,22 @@
 
 typedef size_ship pid_t;
 
-enum cpu_state {
+enum proc_state {
     NEW = 0,
     RUNNABLE,
     ON_CPU,
     WAIT,
+    INTERRUPTIBLE,
     EXIT
 };
 
 struct proc {
     pid_t pid;
-    enum cpu_state state;
+    enum proc_state state;
     struct proc *parent;
 };
+
+void set_proc_state(struct proc *const, enum proc_state);
 
 void passive_sleep();
 

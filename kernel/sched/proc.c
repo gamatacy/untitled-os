@@ -13,12 +13,16 @@ pid_t generate_pid(){
     return pid++;
 }
 
+void set_proc_state(struct proc* const proc, enum proc_state state){
+    proc->state = state;
+}
+
 void passive_sleep(){
 
 }
 
 int exit_proc(int status){
-    current_proc->state = EXIT;
+    set_proc_state(current_proc, EXIT);
     //scheduler();
     return 0;
 }
@@ -37,14 +41,14 @@ struct proc init_first_proc()
     struct proc init_proc;
     init_proc.parent = 0;
     init_proc.pid = generate_pid();
-    init_proc.state = RUNNABLE;
+    set_proc_state(&init_proc, RUNNABLE);
 };
 
 struct proc fork(){
     struct proc child_proc;
     child_proc.pid = generate_pid();
     child_proc.parent = current_proc;
-    child_proc.state = RUNNABLE;
+    set_proc_state(&child_proc, RUNNABLE);
 };
 
 struct proc forkexec();
