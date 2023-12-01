@@ -1,6 +1,6 @@
-#ifndef PAGING_H
-#define PAGING_H
+#ifndef PIT_H
+#define PIT_H
 
-extern void init_plt();
+extern void init_pit();
 
-#endif // PIC_H
+#endif // PIT_H

@@ -6,6 +6,7 @@
 #include "interrupt_handlers.h"
 #include "../lib/include/memset.h"
 #include "../pic/pic.h"
+#include "../pit/pit.h"
 
 #define MAX_INTERRUPTS 256
 void make_interrupt(struct InterruptDescriptor64* idt, ship array_index, uintptr_t handler){
@@ -28,18 +29,19 @@ void setup_idt(){
     }
     // Настроим дескриптор IDT для деления на ноль (INT 0x0)
     make_interrupt(idt, 0, (uintptr_t)divide_by_zero_handler);
+    make_interrupt(idt, PIC_MASTER_OFFSET, (uintptr_t)timer_interrupt);
     make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
-        make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
 
     // Загрузка IDTR
     asm volatile ("lidt %0" : : "m"(idtr));
 
     pic_init();
+    init_pit();
 
     outb(PIC1_DATA,0xff);
     outb(PIC2_DATA,0xff);
 
-    outb(PIC1_DATA, ~(1<<1));
+    outb(PIC1_DATA, ~(1<<0 | 1<<1));
 
     asm("sti");
 }
