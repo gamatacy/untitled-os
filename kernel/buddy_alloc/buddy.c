@@ -2,6 +2,7 @@
 #include "../sync/spinlock.h"
 #include "../list/list.h"
 #include "../lib/include/stdint.h"
+#include "../lib/include/memset.h"
 
 // Buddy allocator
 

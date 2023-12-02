@@ -17,6 +17,7 @@ void make_interrupt(struct InterruptDescriptor64* idt, ship array_index, uintptr
     idt[array_index].offset_2 = (uint16_t)((handler) >> 16);
     idt[array_index].offset_3 = (uint32_t)((handler) >> 32);
 }
+
 void setup_idt(){
     struct InterruptDescriptor64 idt[MAX_INTERRUPTS]; // Создаем массив для 256 дескрипторов (для всех возможных прерываний)
     // Настройка регистра IDTR
@@ -31,6 +32,7 @@ void setup_idt(){
     make_interrupt(idt, 0, (uintptr_t)divide_by_zero_handler);
     make_interrupt(idt, PIC_MASTER_OFFSET, (uintptr_t)timer_interrupt);
     make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
+    make_interrupt(idt, 14, (uintptr_t)penis_interrupt);
 
     // Загрузка IDTR
     asm volatile ("lidt %0" : : "m"(idtr));

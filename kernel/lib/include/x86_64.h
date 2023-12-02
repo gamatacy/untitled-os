@@ -69,4 +69,12 @@ readeflags(void)
     return eflags;
 }
 
+static inline uint64_t
+rcr2(void)
+{
+  uint64_t val;
+  asm volatile("mov %%cr2,%0" : "=r" (val));
+  return val;
+}
+
 #endif // X86_64_H

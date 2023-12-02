@@ -4,7 +4,7 @@
 #include "../lib/include/stdint.h"
 
 void kinit() {
-    char* start = (char *) PGROUNDUP((uint64_t)end);
+    char* start = (char *) PGROUNDUP((uint64_t)KEND);
     bd_init(start, PHYSTOP);
 }
 

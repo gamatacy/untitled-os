@@ -10,5 +10,6 @@ void keyboard_handler_wrapper();
 void keyboard_handler();
 void timer_interrupt();
 void default_handler();
+void penis_interrupt();
 
 #endif //UNTITLED_OS_INTERRUPT_HANDLERS_H

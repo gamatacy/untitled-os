@@ -6,6 +6,7 @@
 #include "../pic/pic.h"
 #include "../vga/vga.h"
 #include "../tty/tty.h"
+#include "../lib/include/x86_64.h"
 #define F1 0x3B
 
 struct interrupt_frame;
@@ -48,6 +49,11 @@ __attribute__((interrupt)) void default_handler(struct interrupt_frame* frame) {
 }
 
 __attribute__((interrupt)) void timer_interrupt(struct interrupt_frame* frame) {
-    print("clock\n");
+    //print("clock\n");
     outb(PIC1_COMMAND, PIC_EOI);
+}
+
+__attribute__((interrupt)) void penis_interrupt(struct interrupt_frame* frame) {
+    printf("Page fault on VA: %d", rcr2());
+    while (1) {}
 }
