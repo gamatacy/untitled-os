@@ -6,6 +6,8 @@
 #include "vga/vga.h"
 #include "idt/idt.h"
 #include "tty/tty.h"
+#include "kalloc/kalloc.h"
+#include "buddy_alloc/buddy.h"
 #include "memlayout.h"
 
 int kernel_main(){
@@ -20,6 +22,10 @@ int kernel_main(){
     print("$ \n");
     printf("Kernel end at address: %d\n", KEND);
     printf("Kernel size: %d\n", KEND - KSTART);
+
+    //kinit();
+    //bd_print();
+
     while(1);
     return 0;
 }

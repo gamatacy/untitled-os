@@ -9,11 +9,9 @@
 #include "../sched/proc.h"
 #include "../lib/include/x86_64.h"
 
-typedef struct {
-    uship8 is_locked;
+struct spinlock {
+    uint8_t is_locked;
     char* name;
-} spinlock;
-
-
+};
 
 #endif //UNTITLED_OS_SPINLOCK_H
