@@ -9,7 +9,7 @@
 #define MAXPROCS 10
 
 #include "../lib/include/stdint.h"
-
+#include "../tty/tty.h"
 typedef struct {
   int ncli;                    // Depth of pushcli nesting.
   int intena;                  // Were interrupts enabled before pushcli?
@@ -46,6 +46,8 @@ pid_t get_pid();
 int exec(char *file, char *argv[]);
 
 char *sbrk(int n);
+
+void panic(char* message);
 
 struct proc init_first_proc();
 

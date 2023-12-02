@@ -5,7 +5,6 @@
 
 
 #include "proc.h"
-
 struct proc* current_proc;
 
 pid_t generate_pid(){
@@ -50,5 +49,10 @@ struct proc fork(){
     child_proc.parent = current_proc;
     set_proc_state(&child_proc, RUNNABLE);
 };
+
+void panic(char* message){
+    print(message);
+    exit_proc(1);
+}
 
 struct proc forkexec();
