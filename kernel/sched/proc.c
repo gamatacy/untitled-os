@@ -6,7 +6,6 @@
 
 #include "proc.h"
 struct proc *current_proc;
-//cpu *current_cpu;
 
 pid_t generate_pid() {
     static pid_t pid = 0;

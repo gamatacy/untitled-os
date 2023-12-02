@@ -8,12 +8,12 @@
 // Eflags register
 #define FL_INT           0x00000200      // Interrupt Enable
 
-void initlock(spinlock *lock, char *name) {
+void initlock(struct spinlock *lock, char *name) {
     lock->is_locked = 0;
     lock->name = name;
 }
 
-void acquire(spinlock *lk) {
+void acquire(struct spinlock *lk) {
     pushcli(); // disable interrupts to avoid deadlock.
     if (holding(lk))
         panic("acquire");
@@ -28,7 +28,7 @@ void acquire(spinlock *lk) {
 
 }
 
-void release(spinlock *lk) {
+void release(struct spinlock *lk) {
     if (!holding(lk))
         panic("release");
 
@@ -48,7 +48,7 @@ void release(spinlock *lk) {
 }
 
 int
-holding(spinlock *lock) {
+holding(struct spinlock *lock) {
     int r;
     pushcli();
     r = lock->is_locked;
@@ -61,16 +61,16 @@ void pushcli(void) {
 
     eflags = readeflags();
     cli();
-    if (current_cpu->ncli == 0)
-        current_cpu->intena = eflags & FL_INT;
-    current_cpu->ncli += 1;
+    if (current_cpu.ncli == 0)
+        current_cpu.intena = eflags & FL_INT;
+    current_cpu.ncli += 1;
 }
 
 void popcli(void) {
     if (readeflags() & FL_INT)
         panic("popcli - interruptible");
-    if (--current_cpu->ncli < 0)
+    if (--current_cpu.ncli < 0)
         panic("popcli");
-    if (current_cpu->ncli == 0 && current_cpu->intena)
+    if (current_cpu.ncli == 0 && current_cpu.intena)
         sti();
 }

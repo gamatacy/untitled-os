@@ -10,8 +10,8 @@
 
 #include "../lib/include/stdint.h"
 #include "../tty/tty.h"
-typedef size_ship pid_t;
 
+typedef size_ship pid_t;
 
 
 enum proc_state {
@@ -30,14 +30,13 @@ struct proc {
 };
 
 
-typedef struct {
+struct cpu {
     int ncli;                    // Depth of pushcli nesting.
     int intena;                  // Were interrupts enabled before pushcli?
     struct current_proc *proc;           // The process running on this cpu or null
-} cpu;
+};
 
-cpu *current_cpu;
-
+struct cpu current_cpu;
 
 void set_proc_state(struct proc *const, enum proc_state);
 

@@ -23,7 +23,7 @@ int kernel_main(){
     printf("Kernel end at address: %d\n", KEND);
     printf("Kernel size: %d\n", KEND - KSTART);
 
-    //kinit();
+    kinit();
     //bd_print();
 
     while(1);
