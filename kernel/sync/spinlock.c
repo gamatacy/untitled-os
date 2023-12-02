@@ -4,7 +4,7 @@
 //
 
 #include "spinlock.h"
-
+#include "../lib/include/x86_64.h"
 // Eflags register
 #define FL_INT           0x00000200      // Interrupt Enable
 
@@ -58,7 +58,8 @@ holding(spinlock *lock) {
 
 void pushcli(void) {
     int eflags;
-    readeflags(&eflags);
+
+    eflags = readeflags();
     cli();
     if (current_cpu->ncli == 0)
         current_cpu->intena = eflags & FL_INT;
@@ -66,9 +67,7 @@ void pushcli(void) {
 }
 
 void popcli(void) {
-    int eflags;
-    readeflags(&eflags);
-    if (eflags & FL_INT)
+    if (readeflags() & FL_INT)
         panic("popcli - interruptible");
     if (--current_cpu->ncli < 0)
         panic("popcli");

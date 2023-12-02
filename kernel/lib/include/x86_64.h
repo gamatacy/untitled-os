@@ -3,14 +3,19 @@
 // Copyright (c) 2023 SHIPOS. All rights reserved.
 //
 
-#include "stdint.h"
-
 #ifndef X86_64_H
 #define X86_64_H
+#include "stdint.h"
 
 static inline void
 cli(void) {
     asm volatile("cli");
+}
+
+static inline void
+sti(void)
+{
+    asm volatile("sti");
 }
 
 
@@ -25,8 +30,6 @@ static inline void outw(uint16_t port, uint16_t val) {
 static inline void outl(uint16_t port, uint32_t val) {
     asm volatile ( "outl %0, %1" : : "a"(val), "Nd"(port) :"memory");
 }
-
-2
 
 static inline uint8_t inb(uint16_t port) {
     uint8_t res;
@@ -58,8 +61,12 @@ static inline uint xchg(volatile uint *addr, uint newval) {
 }
 
 
-void get_eflags(uint32_t *eflags) {
-    asm("pushf; pop %0" : "=rm" (*eflags));
+static inline uint32_t
+readeflags(void)
+{
+    uint64_t eflags;
+    asm volatile("pushf; pop %0" : "=r" (eflags));
+    return eflags;
 }
 
 #endif // X86_64_H

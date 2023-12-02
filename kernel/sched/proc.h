@@ -10,15 +10,9 @@
 
 #include "../lib/include/stdint.h"
 #include "../tty/tty.h"
-typedef struct {
-  int ncli;                    // Depth of pushcli nesting.
-  int intena;                  // Were interrupts enabled before pushcli?
-  struct proc *proc;           // The process running on this cpu or null
-} cpu;
-
-cpu* current_cpu;
-
 typedef size_ship pid_t;
+
+
 
 enum proc_state {
     NEW = 0,
@@ -35,6 +29,16 @@ struct proc {
     struct proc *parent;
 };
 
+
+typedef struct {
+    int ncli;                    // Depth of pushcli nesting.
+    int intena;                  // Were interrupts enabled before pushcli?
+    struct current_proc *proc;           // The process running on this cpu or null
+} cpu;
+
+cpu *current_cpu;
+
+
 void set_proc_state(struct proc *const, enum proc_state);
 
 void passive_sleep();
@@ -47,7 +51,7 @@ int exec(char *file, char *argv[]);
 
 char *sbrk(int n);
 
-void panic(char* message);
+void panic(char *message);
 
 struct proc init_first_proc();
 
