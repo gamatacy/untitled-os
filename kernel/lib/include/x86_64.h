@@ -5,8 +5,16 @@
 
 #include "stdint.h"
 
-#ifndef IO_H
-#define IO_H
+#ifndef X86_64_H
+#define X86_64_H
+
+static inline void
+cli(void)
+{
+  asm volatile("cli");
+}
+
+
 
 static inline void outb(uint16_t port, uint8_t val) {
     asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) :"memory");
@@ -33,4 +41,25 @@ static inline uint32_t inl(uint16_t port) {
     return res;
 }
 
-#endif // IO_H
+static inline uint xchg(volatile uint *addr, uint newval)
+{
+    uint result;
+
+    // The + in "+m" denotes a read-modify-write operand.
+    asm volatile("lock; xchgl %0, %1" :
+            "+m" (*addr), "=a" (result) :
+            "1" (newval) :
+            "cc");
+    return result;
+}
+
+
+
+static inline uint readeflags(void)
+{
+    uint eflags;
+    asm volatile("pushfl; popl %0" : "=r" (eflags)); // push eflags to stack, pop them into eflags
+    return eflags;
+}
+
+#endif // X86_64_H

@@ -10,6 +10,14 @@
 
 #include "../lib/include/stdint.h"
 
+typedef struct {
+  int ncli;                    // Depth of pushcli nesting.
+  int intena;                  // Were interrupts enabled before pushcli?
+  struct proc *proc;           // The process running on this cpu or null
+} cpu;
+
+cpu* current_cpu;
+
 typedef size_ship pid_t;
 
 enum proc_state {

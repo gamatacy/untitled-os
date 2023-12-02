@@ -6,9 +6,14 @@
 #ifndef UNTITLED_OS_SPINLOCK_H
 #define UNTITLED_OS_SPINLOCK_H
 #include "../lib/include/stdint.h"
+#include "../sched/proc.h"
+#include "../lib/include/x86_64.h"
+
 typedef struct {
     uship8 is_locked;
-    char name[10];
+    char* name;
 } spinlock;
+
+
 
 #endif //UNTITLED_OS_SPINLOCK_H

@@ -2,7 +2,7 @@
 // Created by oleg on 28.09.23.
 //
 #include "interrupt_handlers.h"
-#include "../lib/include/io.h"
+#include "../lib/include/x86_64.h"
 #include "../pic/pic.h"
 #include "../vga/vga.h"
 #include "../tty/tty.h"
