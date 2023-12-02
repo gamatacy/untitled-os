@@ -4,3 +4,9 @@
 //
 
 #include "spinlock.h"
+
+void initlock(spinlock* lock, char* name){
+    lock->name = name;
+    lock->is_locked = 0;
+}
+
