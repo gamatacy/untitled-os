@@ -32,7 +32,7 @@ void setup_idt(){
     make_interrupt(idt, 0, (uintptr_t)divide_by_zero_handler);
     make_interrupt(idt, PIC_MASTER_OFFSET, (uintptr_t)timer_interrupt);
     make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
-    make_interrupt(idt, 14, (uintptr_t)penis_interrupt);
+    make_interrupt(idt, 14, (uintptr_t)interrupt_handler_14);
 
     // Загрузка IDTR
     asm volatile ("lidt %0" : : "m"(idtr));

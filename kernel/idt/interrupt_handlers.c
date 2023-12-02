@@ -53,7 +53,8 @@ __attribute__((interrupt)) void timer_interrupt(struct interrupt_frame* frame) {
     outb(PIC1_COMMAND, PIC_EOI);
 }
 
-__attribute__((interrupt)) void penis_interrupt(struct interrupt_frame* frame) {
-    printf("Page fault on VA: %d", rcr2());
+void interrupt_handler(uint64_t error_code, uint64_t interrupt_number) {
+    printf("Interrupt number %d, error_code: %b\n", interrupt_number, error_code);
+    printf("CR2: %x\n", rcr2());
     while (1) {}
 }
