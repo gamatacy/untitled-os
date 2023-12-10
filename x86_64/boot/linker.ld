@@ -1,6 +1,7 @@
 ENTRY(start)
 
 SECTIONS{
+    
     . = 1M;
 
     .boot :
@@ -11,6 +12,12 @@ SECTIONS{
     .text :
     {
         *(.text)
+    }
+
+    
+    .bss : 
+    {
+        *(.bss)
     }
 
     PROVIDE(end = .);

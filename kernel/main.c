@@ -7,8 +7,8 @@
 #include "idt/idt.h"
 #include "tty/tty.h"
 #include "kalloc/kalloc.h"
-#include "buddy_alloc/buddy.h"
 #include "memlayout.h"
+#include "lib/include/x86_64.h"
 
 int kernel_main(){
     setup_idt();
@@ -19,6 +19,9 @@ int kernel_main(){
         printf("TTY %d\n", i);
     }
     set_tty(0);
+    printf(
+    " CR3: %x\n", rcr3()
+    );
     print("$ \n");
     printf("Kernel end at address: %d\n", KEND);
     printf("Kernel size: %d\n", KEND - KSTART);

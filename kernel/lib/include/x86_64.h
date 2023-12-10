@@ -77,4 +77,14 @@ rcr2(void)
   return val;
 }
 
+
+static inline uint64_t
+rcr3(void)
+{
+  uint64_t val;
+  asm volatile("mov %%cr3,%0" : "=r" (val));
+  return val;
+}
+
+
 #endif // X86_64_H
