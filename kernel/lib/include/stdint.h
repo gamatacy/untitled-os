@@ -17,7 +17,7 @@ typedef signed int int32_t;
 typedef signed long long int64_t;
 typedef unsigned long long size_t;
 typedef unsigned long long uintptr_t;
-
+typedef unsigned int uint;
 
 typedef unsigned char uship8;
 typedef unsigned short uship16;

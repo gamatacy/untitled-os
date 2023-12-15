@@ -4,7 +4,7 @@
 //
 
 #include "../lib/include/stdint.h"
-#include "../lib/include/io.h"
+#include "../lib/include/x86_64.h"
 #ifndef PIC_H
 #define PIC_H
 

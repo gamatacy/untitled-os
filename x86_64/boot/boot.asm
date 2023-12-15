@@ -91,7 +91,7 @@ p2_table:
 p1_table:
     resb 4096
 stack_bottom:
-    resb 4096*4
+    resb 4096*8
 stack_top:
 
 section .rodata

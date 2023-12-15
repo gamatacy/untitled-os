@@ -9,14 +9,17 @@
 #define MAXPROCS 10
 
 #include "../lib/include/stdint.h"
+#include "../tty/tty.h"
 
 typedef size_ship pid_t;
+
 
 enum proc_state {
     NEW = 0,
     RUNNABLE,
     ON_CPU,
     WAIT,
+    INTERRUPTIBLE,
     EXIT
 };
 
@@ -25,6 +28,17 @@ struct proc {
     enum proc_state state;
     struct proc *parent;
 };
+
+
+struct cpu {
+    int ncli;                    // Depth of pushcli nesting.
+    int intena;                  // Were interrupts enabled before pushcli?
+    struct current_proc *proc;           // The process running on this cpu or null
+};
+
+struct cpu current_cpu;
+
+void set_proc_state(struct proc *const, enum proc_state);
 
 void passive_sleep();
 
@@ -35,6 +49,8 @@ pid_t get_pid();
 int exec(char *file, char *argv[]);
 
 char *sbrk(int n);
+
+void panic(char *message);
 
 struct proc init_first_proc();
 

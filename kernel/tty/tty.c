@@ -9,8 +9,8 @@
 #include "../lib/include/stdint.h"
 #include "../lib/include/memset.h"
 #define TERMINALS_NUMBER 7
-static struct tty_structure tty_terminals[TERMINALS_NUMBER];
-static struct tty_structure* active_tty;
+static tty_structure tty_terminals[TERMINALS_NUMBER];
+static tty_structure* active_tty;
 
 void set_fg(enum vga_colors _fg) {
     active_tty->fg = _fg;
@@ -21,7 +21,7 @@ void set_bg(enum vga_colors _bg) {
 }
 
 void init_tty(){
-    memset(&tty_terminals, 0, sizeof(struct tty_structure) * TERMINALS_NUMBER);
+    memset(&tty_terminals, 0, sizeof(tty_structure) * TERMINALS_NUMBER);
     for (ship i = 0; i < TERMINALS_NUMBER; ++i) {
         (tty_terminals+i)->tty_id = i;
         (tty_terminals+i)->bg = DEFAULT_BG_COLOR;
