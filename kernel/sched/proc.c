@@ -5,6 +5,7 @@
 
 
 #include "proc.h"
+
 struct proc *current_proc;
 
 pid_t generate_pid() {

@@ -49,7 +49,7 @@ __attribute__((interrupt)) void default_handler(struct interrupt_frame* frame) {
 }
 
 __attribute__((interrupt)) void timer_interrupt(struct interrupt_frame* frame) {
-    //print("clock\n");
+//    print("clock\n");
     outb(PIC1_COMMAND, PIC_EOI);
 }
 
