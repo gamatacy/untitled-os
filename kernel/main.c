@@ -30,7 +30,7 @@ int kernel_main(){
 
     printf("%d", 1/0);
 
-    // kinit();
+    kinit(KEND, INIT_PHYSTOP);
     // page_entry_raw res = walk(rcr3(), 3 << 12 << 27 + 2 << 12 << 18 + 1 << 12 << 9 + 0 << 12, 1);
     // printf("Walk res: %p\n", res);
     //print_vm(rcr3());

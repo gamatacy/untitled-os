@@ -5,6 +5,7 @@ extern char end[]; // first address after kernel
                    // defined in linked.ld
 #define KEND end
 
+#define INIT_PHYSTOP 2*1024*1024      // Initial entry pagetable capacity
 #define PHYSTOP 2*1024*1024           // Top physical memory
 
 #define PGSIZE 4096 // bytes per page
