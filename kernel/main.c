@@ -29,12 +29,11 @@ int kernel_main(){
     printf("Kernel size: %d\n", KEND - KSTART);
 
     kinit(KEND, INIT_PHYSTOP);
-    // print_vm(rcr3());
-
     pagetable_t kernel_table = kvminit(INIT_PHYSTOP, PHYSTOP);
-    printf("kernle table: %p\n", kernel_table);
-    //print_vm(kernel_table);
-    kinit(INIT_PHYSTOP, 512*512*4096);
+    printf("kernel table: %p\n", kernel_table);
+    kinit(INIT_PHYSTOP, PHYSTOP);
+    printf("Successfully allocated physical memory up to %p\n", PHYSTOP);
+    printf("%d pages available in allocator\n", count_pages());
 
     while(1) {};
     return 0;

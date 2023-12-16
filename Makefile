@@ -46,7 +46,7 @@ build_kernel: $(ISO_BOOT_DIR)/kernel.bin
 build_iso: $(ISO_DIR)/kernel.iso
 
 QEMU=qemu-system-x86_64
-QEMU_FLAGS=-m 1G -cdrom
+QEMU_FLAGS=-m 128M -cdrom
 
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)

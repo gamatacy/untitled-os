@@ -6,7 +6,7 @@ extern char end[]; // first address after kernel
 #define KEND end
 
 #define INIT_PHYSTOP 2*1024*1024      // Initial entry pagetable capacity
-#define PHYSTOP 512*512*4096          // Top physical memory
+#define PHYSTOP 128*1024*1024          // Top physical memory
 
 #define PGSIZE 4096 // bytes per page
 #define PGSHIFT 12  // bits of offset within a page

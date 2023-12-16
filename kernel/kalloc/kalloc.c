@@ -24,8 +24,10 @@ void kinit(uint64_t start, uint64_t stop) {
 void kfree(void *pa) {
     struct run *r;
 
-  if(((uint64_t)pa % PGSIZE) != 0 || (char*)pa < end || (uint64_t)pa >= PHYSTOP)
+  if(((uint64_t)pa % PGSIZE) != 0 || (char*)pa < end || (uint64_t)pa >= PHYSTOP) {
+    printf("Panic while trying to free memory\nPA: %p END: %p PHYSTOP: %p", pa, end, PHYSTOP);
     panic("kfree");
+  }
 
   // Fill with junk to catch dangling refs.
   char* testpa = (pa + PGSIZE -1);
@@ -51,4 +53,16 @@ void *kalloc() {
   if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
+}
+
+uint64_t count_pages() {
+  struct run *r = kmem.freelist;
+  uint64_t res = 0;
+
+  while (r != 0) {
+    res++;
+    r = r->next;
+  }
+
+  return res;
 }

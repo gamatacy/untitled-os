@@ -52,6 +52,9 @@ struct proc fork() {
 
 void panic(char *message) {
     print(message);
+    while (1) {}
+
+    // SHIPU???
     exit_proc(1);
 }
 
