@@ -44,7 +44,7 @@ __attribute__((interrupt)) void timer_interrupt(struct interrupt_frame* frame) {
     outb(PIC1_COMMAND, PIC_EOI);
 }
 
-char** error_messages = {
+char* error_messages[] = {
     "division_error", // 0
     "debug", // 1
     "non-maskable interrupt", // 2
@@ -80,7 +80,7 @@ char** error_messages = {
 };
 
 void interrupt_handler(uint64_t error_code, uint64_t interrupt_number) {
-    printf("Interrupt number %d (%s), error_code: %b\n", interrupt_number, error_messages[error_code], error_code);
+    printf("Interrupt number %d (%s), error_code: %b\n", interrupt_number, error_messages[interrupt_number], error_code);
     printf("CR2: %x\n", rcr2());
     while (1) {}
 }

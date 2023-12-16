@@ -7,6 +7,7 @@
 #include "paging.h"
 #include "../tty/tty.h"
 #include "../kalloc/kalloc.h"
+#include "../lib/include/memset.h"
 
 page_entry_raw encode_page_entry(struct page_entry entry) {
 
@@ -61,7 +62,7 @@ void init_entry(page_entry_raw *raw_entry, uint64_t addr) {
     entry.d = 0;
     entry.rsvd = 0;
     entry.ign1 = 0;
-    entry.address = addr >> 12;
+    entry.address = addr;// >> 12;
     entry.ign2 = 0;
     entry.xd = 0;
 
@@ -109,7 +110,6 @@ void do_print_vm(pagetable_t tbl, int level) {
 }
 
 void print_vm(pagetable_t tbl) {
-    printf("PRINTVM 4 ADDR: %p\n", tbl);
     do_print_vm(tbl, 4);
 }
 
@@ -118,9 +118,14 @@ void print_vm(pagetable_t tbl) {
 pagetable_t init_tables(){
 
     pagetable_t tbl4 = (pagetable_t) kalloc();
+    memset(tbl4,0,4096);
     pagetable_t tbl3 = (pagetable_t) kalloc();
+    memset(tbl3,0,4096);
     pagetable_t tbl2 = (pagetable_t) kalloc();
+    memset(tbl2,0,4096);
     pagetable_t tbl1 = (pagetable_t) kalloc();
+    memset(tbl1,0,4096);
+
 
     init_entry(tbl4, (uint64_t) tbl3);
     init_entry(tbl3, (uint64_t) tbl2);

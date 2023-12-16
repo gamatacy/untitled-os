@@ -29,17 +29,12 @@ int kernel_main(){
     printf("Kernel size: %d\n", KEND - KSTART);
 
     kinit();
-<<<<<<< HEAD
     // print_vm(rcr3());
 
     
+    // init_tables();
     print_vm(init_tables());    
     
-=======
-    page_entry_raw res = walk(rcr3(), 3 << 12 << 27 + 2 << 12 << 18 + 1 << 12 << 9 + 0 << 12, 1);
-    printf("Walk res: %p\n", res);
-    //print_vm(rcr3());
->>>>>>> OlegSH
 
     while(1);
     return 0;
