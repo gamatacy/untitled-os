@@ -13,11 +13,11 @@ struct {
   struct run *freelist;
 } kmem;
 
-void kinit() {
+void kinit(uint64_t start, uint64_t stop) {
     // initlock(&kmem.lock, "kmem");
     char *p;
-  p = (char*)PGROUNDUP((uint64_t)KEND);
-  for(;p + PGSIZE <= PHYSTOP; p += PGSIZE)
+  p = (char*)PGROUNDUP(start);
+  for(;p + PGSIZE <= stop; p += PGSIZE)
     kfree(p);
 }
 
