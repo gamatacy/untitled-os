@@ -6,6 +6,8 @@
 
 #include "paging.h"
 #include "../tty/tty.h"
+#include "../kalloc/kalloc.h"
+#include "../lib/include/memset.h"
 
 page_entry_raw encode_page_entry(struct page_entry entry) {
 
@@ -58,9 +60,31 @@ void init_entry(struct page_entry *entry, uint64_t addr) {
    entry->d = 0;
    entry->rsvd = 0;
    entry->ign1 = 0;
-   entry->address = addr;
+   entry->address = addr >> 12;
    entry->ign2 = 0;
    entry->xd = 0;
+}
+
+struct page_entry_raw *walk(pagetable_t tbl, uint64_t va, bool alloc) {
+    for (int level = 3; level > 0; level--) {
+        int level_index = (va >> (12 + level * 9)) & 0x1FF;
+        page_entry_raw *entry_raw = tbl + level_index;
+        struct page_entry entry = decode_page_entry(*entry_raw);
+
+        if (entry.p) {
+            tbl = entry.address << 12;
+        } else {
+            if (alloc == 0 || (tbl = kalloc()) == 0) {
+                return 0;
+            }
+            memset(tbl, 0, 4096);
+            struct page_entry new_entry;
+            init_entry(&new_entry, (uint64_t)tbl);
+            *entry_raw = encode_page_entry(new_entry);
+        }
+    }
+
+    return tbl + ((va >> 12) & 0x1FF);
 }
 
 void print_entry(struct page_entry *entry) {
