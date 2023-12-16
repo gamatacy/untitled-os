@@ -64,6 +64,8 @@ void init_paging();
 
 void print_vm(pagetable_t);
 
-pagetable_t init_tables();
+pagetable_t kvminit(uint64_t, uint64_t);
+
+struct page_entry_raw *walk(pagetable_t tbl, uint64_t va, bool alloc);
 
 #endif

@@ -8,6 +8,8 @@
 #include "../tty/tty.h"
 #include "../kalloc/kalloc.h"
 #include "../lib/include/memset.h"
+#include "../memlayout.h"
+#include "../lib/include/x86_64.h"
 
 page_entry_raw encode_page_entry(struct page_entry entry) {
 
@@ -22,7 +24,7 @@ page_entry_raw encode_page_entry(struct page_entry entry) {
     raw |= (entry.d & 0x1) << 6;
     raw |= (entry.rsvd & 0x1) << 7;
     raw |= (entry.ign1 & 0xF) << 8;
-    raw |= (entry.address & 0xfffff000); // << 12;
+    raw |= (entry.address & 0xfffff000);
     raw |= (entry.ign2 & 0x7FFF) << 48;
     raw |= (entry.xd & 0x1) << 63;
 
@@ -56,13 +58,13 @@ void init_entry(page_entry_raw *raw_entry, uint64_t addr) {
     entry.p = 1;    
     entry.rw = 1;
     entry.us = 0;
-    entry.pwt = 1;
+    entry.pwt = 0;
     entry.pcd = 0;
     entry.a = 0;
     entry.d = 0;
     entry.rsvd = 0;
     entry.ign1 = 0;
-    entry.address = addr;// >> 12;
+    entry.address = addr;
     entry.ign2 = 0;
     entry.xd = 0;
 
@@ -72,27 +74,32 @@ void init_entry(page_entry_raw *raw_entry, uint64_t addr) {
 struct page_entry_raw *walk(pagetable_t tbl, uint64_t va, bool alloc) {
     for (int level = 3; level > 0; level--) {
         int level_index = (va >> (12 + level * 9)) & 0x1FF;
-        page_entry_raw *entry_raw = tbl + level_index;
+        printf("VA: %p TBL: %p LEVEL: %d INDEX: %d\n", va, tbl, level, level_index);
+        page_entry_raw *entry_raw = &tbl[level_index];
         struct page_entry entry = decode_page_entry(*entry_raw);
+        print_entry(&entry);
 
         if (entry.p) {
+            printf("PRESENT, CONTINUE\n");
             tbl = entry.address << 12;
         } else {
+            printf("NOT PRESENT, ALLOC NEW TABLE\n");
             if (alloc == 0 || (tbl = kalloc()) == 0) {
                 return 0;
             }
-            memset(tbl, 0, 4096);
+            memset(tbl, 0, PGSIZE);
             struct page_entry new_entry;
             init_entry(&new_entry, (uint64_t)tbl);
             *entry_raw = encode_page_entry(new_entry);
         }
     }
 
+    printf("ENTRY IN TABLE %p\n", tbl);
     return tbl + ((va >> 12) & 0x1FF);
 }
 
 void print_entry(struct page_entry *entry) {
-    printf("P: %d RW: %d US: %d PWT: %d A: %d D: %d ADDR: %p\n", entry->p, entry->rw, entry->us, entry->pwt, entry->a, entry->d, entry->address << 12);
+    printf("P: %d RW: %d US: %d PWT: %d A: %d D: %d ADDR: %p  VALUE: %x\n", entry->p, entry->rw, entry->us, entry->pwt, entry->a, entry->d, entry->address << 12, *(uint64_t*)(entry->address << 12));
 }
 
 void do_print_vm(pagetable_t tbl, int level) {
@@ -113,28 +120,48 @@ void print_vm(pagetable_t tbl) {
     do_print_vm(tbl, 4);
 }
 
+// pagetable_t kvminit(uint64_t start, uint64_t end) {
+//     pagetable_t tbl4 = rcr3();
+    
+//     char *addr;
+//     addr = (char*)PGROUNDUP(start);
+//     for(;addr + PGSIZE < end; addr += PGSIZE) {
+//         printf("Walking address %p\n", addr);
+//         page_entry_raw *entry_raw = walk(tbl4, addr, 1);
+//         printf("FOUND ENTRY AT ADDRESS: %p\n", entry_raw);
+//         while (entry_raw == 0) {}
+//         init_entry(entry_raw, addr);
+//         printf("INITIALIZED ENTRY: %p\n", addr);
+//     }
 
+//     return tbl4;
+// }
 
-pagetable_t init_tables(){
+pagetable_t kvminit(uint64_t start, uint64_t end){
 
-    pagetable_t tbl4 = (pagetable_t) kalloc();
-    memset(tbl4,0,4096);
-    pagetable_t tbl3 = (pagetable_t) kalloc();
-    memset(tbl3,0,4096);
-    pagetable_t tbl2 = (pagetable_t) kalloc();
-    memset(tbl2,0,4096);
-    pagetable_t tbl1 = (pagetable_t) kalloc();
-    memset(tbl1,0,4096);
+    // pagetable_t tbl4 = (pagetable_t) kalloc();
+    // memset(tbl4,0,4096);
+    // pagetable_t tbl3 = (pagetable_t) kalloc();
+    // memset(tbl3,0,4096);
+    // pagetable_t tbl2 = (pagetable_t) kalloc();
+    // memset(tbl2,0,4096);
+    // pagetable_t tbl1 = (pagetable_t) kalloc();
+    // memset(tbl1,0,4096);
+    pagetable_t tbl4 = rcr3();
+    pagetable_t tbl3 = decode_page_entry(tbl4[0]).address << 12;
+    pagetable_t tbl2 = decode_page_entry(tbl3[0]).address << 12;
+    
 
+    for (int j = 1; j < 512; ++j)
+    {
+        pagetable_t tbl1 = kalloc();
+        init_entry(tbl2 + j, (uint64_t) tbl1);
 
-    init_entry(tbl4, (uint64_t) tbl3);
-    init_entry(tbl3, (uint64_t) tbl2);
-    init_entry(tbl2, (uint64_t) tbl1);
-
-    for (int i = 0; i < 512; ++i){
-        init_entry(tbl1 + i, (uint64_t) kalloc());
+        for (uint64_t i = 0; i < 512; ++i){
+            init_entry(tbl1 + i, start + (i << 12) + ((j - 1) << 9 << 12) );
+        }
     }
+    
 
     return tbl4;
-
 }

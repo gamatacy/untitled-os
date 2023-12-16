@@ -86,5 +86,12 @@ rcr3(void)
   return val;
 }
 
+static inline void
+wcr3(uint64_t val)
+{
+    asm("mov %0, %%rax" :: "a"(val));
+    asm("mov %rax, %cr3");
+}
+
 
 #endif // X86_64_H

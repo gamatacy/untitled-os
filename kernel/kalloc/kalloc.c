@@ -17,7 +17,7 @@ void kinit(uint64_t start, uint64_t stop) {
     // initlock(&kmem.lock, "kmem");
     char *p;
   p = (char*)PGROUNDUP(start);
-  for(;p + PGSIZE <= stop; p += PGSIZE)
+  for(;p + PGSIZE < stop; p += PGSIZE)
     kfree(p);
 }
 
@@ -29,7 +29,7 @@ void kfree(void *pa) {
 
   // Fill with junk to catch dangling refs.
   char* testpa = (pa + PGSIZE -1);
-  memset(pa, 1, PGSIZE);
+  memset(pa, 0, PGSIZE);
 
   r = (struct run*)pa;
 
