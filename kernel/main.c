@@ -28,9 +28,11 @@ int kernel_main(){
     printf("Kernel end at address: %d\n", KEND);
     printf("Kernel size: %d\n", KEND - KSTART);
 
-    kinit();
-    page_entry_raw res = walk(rcr3(), 3 << 12 << 27 + 2 << 12 << 18 + 1 << 12 << 9 + 0 << 12, 1);
-    printf("Walk res: %p\n", res);
+    printf("%d", 1/0);
+
+    // kinit();
+    // page_entry_raw res = walk(rcr3(), 3 << 12 << 27 + 2 << 12 << 18 + 1 << 12 << 9 + 0 << 12, 1);
+    // printf("Walk res: %p\n", res);
     //print_vm(rcr3());
 
     while(1);
