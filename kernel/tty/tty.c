@@ -61,22 +61,25 @@ void reverse(char *str, ship n) {
     }
 }
 
-void scroll() {
-    for (int i=1; i<VGA_HEIGHT; i++) {
-        for (int j=0; j<VGA_WIDTH; j++) {
-            active_tty->tty_buffer[(i-1)*VGA_WIDTH+j] = active_tty->tty_buffer[i*VGA_WIDTH+j];
-        }
-    }
-    active_tty->line = VGA_HEIGHT-1;
-    active_tty->pos = 0;
-}
-
 struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors bg) {
     struct char_with_color res = {
             .character = value,
             .color = fg + (bg << 4)
     };
     return res;
+}
+
+void scroll() {
+    for (int i=1; i<VGA_HEIGHT; i++) {
+        for (int j=0; j<VGA_WIDTH; j++) {
+            active_tty->tty_buffer[(i-1)*VGA_WIDTH+j] = active_tty->tty_buffer[i*VGA_WIDTH+j];
+        }
+    }
+    for (int i = 0; i < VGA_WIDTH; i++) {
+        active_tty->tty_buffer[VGA_WIDTH*(VGA_HEIGHT-1)+i] = make_char(0, 0, 0);
+    }
+    active_tty->line = VGA_HEIGHT-1;
+    active_tty->pos = 0;
 }
 
 void putchar(char *c) {
@@ -115,8 +118,8 @@ void itoa(ship num, char* str, ship radix) {
     } while (num);
 
     if (is_negative) str[i++] = '-';
-    str[i] = 0;
     reverse(str, i);
+    str[i] = 0;
 }
 
 void ptoa(uint64_t num, char* str) {
@@ -128,14 +131,15 @@ void ptoa(uint64_t num, char* str) {
         num /= 16;
     } while (num);
 
-    str[i] = 0;
     reverse(str, i);
+    str[i] = 0;
 }
 
 void printf(const char* format, ...) {
     va_list varargs;
     va_start(varargs, format);
     char digits_buf[100];
+    for (int i = 0; i < 100; i++) digits_buf[i] = 0;
     while (*format) {
         switch (*format) {
             case '%':

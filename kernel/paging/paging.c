@@ -68,6 +68,28 @@ void init_entry(page_entry_raw *raw_entry, uint64_t addr) {
     *raw_entry = encode_page_entry(entry);
 }
 
+struct page_entry_raw *walk(pagetable_t tbl, uint64_t va, bool alloc) {
+    for (int level = 3; level > 0; level--) {
+        int level_index = (va >> (12 + level * 9)) & 0x1FF;
+        page_entry_raw *entry_raw = tbl + level_index;
+        struct page_entry entry = decode_page_entry(*entry_raw);
+
+        if (entry.p) {
+            tbl = entry.address << 12;
+        } else {
+            if (alloc == 0 || (tbl = kalloc()) == 0) {
+                return 0;
+            }
+            memset(tbl, 0, 4096);
+            struct page_entry new_entry;
+            init_entry(&new_entry, (uint64_t)tbl);
+            *entry_raw = encode_page_entry(new_entry);
+        }
+    }
+
+    return tbl + ((va >> 12) & 0x1FF);
+}
+
 void print_entry(struct page_entry *entry) {
     printf("P: %d RW: %d US: %d PWT: %d A: %d D: %d ADDR: %p\n", entry->p, entry->rw, entry->us, entry->pwt, entry->a, entry->d, entry->address << 12);
 }

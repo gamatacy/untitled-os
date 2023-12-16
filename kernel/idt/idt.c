@@ -29,10 +29,41 @@ void setup_idt(){
         make_interrupt(idt, i, (uintptr_t)default_handler);
     }
     // Настроим дескриптор IDT для деления на ноль (INT 0x0)
-    make_interrupt(idt, 0, (uintptr_t)divide_by_zero_handler);
     make_interrupt(idt, PIC_MASTER_OFFSET, (uintptr_t)timer_interrupt);
     make_interrupt(idt, PIC_MASTER_OFFSET+1, (uintptr_t)keyboard_handler);
+    
+    make_interrupt(idt, 0, (uintptr_t)interrupt_handler_0);
+    make_interrupt(idt, 1, (uintptr_t)interrupt_handler_1);
+    make_interrupt(idt, 2, (uintptr_t)interrupt_handler_2);
+    make_interrupt(idt, 3, (uintptr_t)interrupt_handler_3);
+    make_interrupt(idt, 4, (uintptr_t)interrupt_handler_4);
+    make_interrupt(idt, 5, (uintptr_t)interrupt_handler_5);
+    make_interrupt(idt, 6, (uintptr_t)interrupt_handler_6);
+    make_interrupt(idt, 7, (uintptr_t)interrupt_handler_7);
+    make_interrupt(idt, 8, (uintptr_t)interrupt_handler_8);
+    make_interrupt(idt, 9, (uintptr_t)interrupt_handler_9);
+    make_interrupt(idt, 10, (uintptr_t)interrupt_handler_10);
+    make_interrupt(idt, 11, (uintptr_t)interrupt_handler_11);
+    make_interrupt(idt, 12, (uintptr_t)interrupt_handler_12);
+    make_interrupt(idt, 13, (uintptr_t)interrupt_handler_13);
     make_interrupt(idt, 14, (uintptr_t)interrupt_handler_14);
+    make_interrupt(idt, 15, (uintptr_t)interrupt_handler_15);
+    make_interrupt(idt, 16, (uintptr_t)interrupt_handler_16);
+    make_interrupt(idt, 17, (uintptr_t)interrupt_handler_17);
+    make_interrupt(idt, 18, (uintptr_t)interrupt_handler_18);
+    make_interrupt(idt, 19, (uintptr_t)interrupt_handler_19);
+    make_interrupt(idt, 20, (uintptr_t)interrupt_handler_20);
+    make_interrupt(idt, 21, (uintptr_t)interrupt_handler_21);
+    make_interrupt(idt, 22, (uintptr_t)interrupt_handler_22);
+    make_interrupt(idt, 23, (uintptr_t)interrupt_handler_23);
+    make_interrupt(idt, 24, (uintptr_t)interrupt_handler_24);
+    make_interrupt(idt, 25, (uintptr_t)interrupt_handler_25);
+    make_interrupt(idt, 26, (uintptr_t)interrupt_handler_26);
+    make_interrupt(idt, 27, (uintptr_t)interrupt_handler_27);
+    make_interrupt(idt, 28, (uintptr_t)interrupt_handler_28);
+    make_interrupt(idt, 29, (uintptr_t)interrupt_handler_29);
+    make_interrupt(idt, 30, (uintptr_t)interrupt_handler_30);
+    make_interrupt(idt, 31, (uintptr_t)interrupt_handler_31);
 
     // Загрузка IDTR
     asm volatile ("lidt %0" : : "m"(idtr));
