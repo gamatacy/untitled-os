@@ -64,4 +64,6 @@ void init_paging();
 
 void print_vm(pagetable_t);
 
+pagetable_t init_tables();
+
 #endif

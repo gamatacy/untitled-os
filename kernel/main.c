@@ -29,7 +29,11 @@ int kernel_main(){
     printf("Kernel size: %d\n", KEND - KSTART);
 
     kinit();
-    print_vm(rcr3());
+    // print_vm(rcr3());
+
+    
+    print_vm(init_tables());    
+    
 
     while(1);
     return 0;

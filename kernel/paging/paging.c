@@ -6,6 +6,7 @@
 
 #include "paging.h"
 #include "../tty/tty.h"
+#include "../kalloc/kalloc.h"
 
 page_entry_raw encode_page_entry(struct page_entry entry) {
 
@@ -48,19 +49,23 @@ struct page_entry decode_page_entry(page_entry_raw raw) {
     return entry;
 }
 
-void init_entry(struct page_entry *entry, uint64_t addr) {
-   entry->p = 1;
-   entry->rw = 1;
-   entry->us = 0;
-   entry->pwt = 1;
-   entry->pcd = 0;
-   entry->a = 0;
-   entry->d = 0;
-   entry->rsvd = 0;
-   entry->ign1 = 0;
-   entry->address = addr;
-   entry->ign2 = 0;
-   entry->xd = 0;
+void init_entry(page_entry_raw *raw_entry, uint64_t addr) {
+    struct page_entry entry;
+
+    entry.p = 1;    
+    entry.rw = 1;
+    entry.us = 0;
+    entry.pwt = 1;
+    entry.pcd = 0;
+    entry.a = 0;
+    entry.d = 0;
+    entry.rsvd = 0;
+    entry.ign1 = 0;
+    entry.address = addr >> 12;
+    entry.ign2 = 0;
+    entry.xd = 0;
+
+    *raw_entry = encode_page_entry(entry);
 }
 
 void print_entry(struct page_entry *entry) {
@@ -82,5 +87,27 @@ void do_print_vm(pagetable_t tbl, int level) {
 }
 
 void print_vm(pagetable_t tbl) {
+    printf("PRINTVM 4 ADDR: %p\n", tbl);
     do_print_vm(tbl, 4);
+}
+
+
+
+pagetable_t init_tables(){
+
+    pagetable_t tbl4 = (pagetable_t) kalloc();
+    pagetable_t tbl3 = (pagetable_t) kalloc();
+    pagetable_t tbl2 = (pagetable_t) kalloc();
+    pagetable_t tbl1 = (pagetable_t) kalloc();
+
+    init_entry(tbl4, (uint64_t) tbl3);
+    init_entry(tbl3, (uint64_t) tbl2);
+    init_entry(tbl2, (uint64_t) tbl1);
+
+    for (int i = 0; i < 512; ++i){
+        init_entry(tbl1 + i, (uint64_t) kalloc());
+    }
+
+    return tbl4;
+
 }
