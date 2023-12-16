@@ -10,12 +10,6 @@
 
 struct interrupt_frame;
 
-// static inline uint64_t get_flags() {
-//     uint32_t flags;
-//     asm volatile ( "pushf\npop %0" : "=r"(flags) : : "memory" );
-//     return flags;
-// }
-
 __attribute__((interrupt)) void keyboard_handler(struct interrupt_frame* frame) {
     // printf("Flags: %b\n", get_flags());
     while (inb(0x64) & 1) {
@@ -39,7 +33,7 @@ __attribute__((interrupt)) void default_handler(struct interrupt_frame* frame) {
 }
 
 __attribute__((interrupt)) void timer_interrupt(struct interrupt_frame* frame) {
-    print("clock\n");
+    // print("clock\n");
     outb(PIC1_COMMAND, PIC_EOI);
 }
 
