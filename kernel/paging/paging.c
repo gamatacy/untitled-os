@@ -5,6 +5,7 @@
 
 
 #include "paging.h"
+#include "../tty/tty.h"
 
 page_entry_raw encode_page_entry(struct page_entry entry) {
 
@@ -47,19 +48,39 @@ struct page_entry decode_page_entry(page_entry_raw raw) {
     return entry;
 }
 
-//void init_entry(struct page_entry *entry, uint64_t addr) {
-//
-//    entry->p = 1;
-//    entry->rw = 1;
-//    entry->us = 0;
-//    entry->pwt = 1;
-//    entry->pcd = 0;
-//    entry->a = 0;
-//    entry->d = 0;
-//    entry->rsvd = 0;
-//    entry->ign1 = 0;
-//    entry->address = addr;
-//    entry->ign2 = 0;
-//    entry->xd = 0;
-//
-//}
+void init_entry(struct page_entry *entry, uint64_t addr) {
+   entry->p = 1;
+   entry->rw = 1;
+   entry->us = 0;
+   entry->pwt = 1;
+   entry->pcd = 0;
+   entry->a = 0;
+   entry->d = 0;
+   entry->rsvd = 0;
+   entry->ign1 = 0;
+   entry->address = addr;
+   entry->ign2 = 0;
+   entry->xd = 0;
+}
+
+void print_entry(struct page_entry *entry) {
+    printf("P: %d RW: %d US: %d PWT: %d A: %d D: %d ADDR: %p\n", entry->p, entry->rw, entry->us, entry->pwt, entry->a, entry->d, entry->address << 12);
+}
+
+void do_print_vm(pagetable_t tbl, int level) {
+    int spaces = 4 - level + 1;
+    for (size_t i = 0; i < 512; i++) {
+        struct page_entry entry = decode_page_entry(tbl[i]);
+        if (entry.p) {
+            for (int j = 0; j < spaces; j++) {
+                print(".. ");
+            }
+            print_entry(&entry);
+            if (level > 1) do_print_vm(entry.address << 12, level-1);
+        }
+    }
+}
+
+void print_vm(pagetable_t tbl) {
+    do_print_vm(tbl, 4);
+}

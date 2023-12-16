@@ -9,6 +9,7 @@
 #include "kalloc/kalloc.h"
 #include "memlayout.h"
 #include "lib/include/x86_64.h"
+#include "paging/paging.h"
 
 int kernel_main(){
     setup_idt();
@@ -22,12 +23,13 @@ int kernel_main(){
     printf(
     " CR3: %x\n", rcr3()
     );
+
     print("$ \n");
     printf("Kernel end at address: %d\n", KEND);
     printf("Kernel size: %d\n", KEND - KSTART);
 
     kinit();
-    //bd_print();
+    print_vm(rcr3());
 
     while(1);
     return 0;

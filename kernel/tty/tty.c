@@ -103,7 +103,7 @@ void print(const char *string) {
 void itoa(ship num, char* str, ship radix) {
     ship i = 0;
     int is_negative = 0;
-    if (num < 0) {
+    if (num < 0 && radix != 16) {
         is_negative = 1;
         num *= -1;
     }
@@ -115,6 +115,19 @@ void itoa(ship num, char* str, ship radix) {
     } while (num);
 
     if (is_negative) str[i++] = '-';
+    str[i] = 0;
+    reverse(str, i);
+}
+
+void ptoa(uint64_t num, char* str) {
+    ship i = 0;
+
+    do {
+        int rem = (num % 16);
+        str[i++] = (rem > 9 ? 'a' - 10 : '0') + rem;
+        num /= 16;
+    } while (num);
+
     str[i] = 0;
     reverse(str, i);
 }
@@ -142,6 +155,10 @@ void printf(const char* format, ...) {
                         break;
                     case 'b':
                         itoa(va_arg(varargs, int), digits_buf, 2);
+                        print(digits_buf);
+                        break;
+                    case 'p':
+                        ptoa(va_arg(varargs, uint64_t), digits_buf);
                         print(digits_buf);
                         break;
                     case 's':

@@ -14,6 +14,8 @@
 
 typedef uint64_t page_entry_raw;
 
+typedef page_entry_raw* pagetable_t;
+
 struct page_entry {
     // Present; must be 1 to map a page
     bool p;
@@ -59,5 +61,7 @@ page_entry_raw encode_page_entry(struct page_entry);
 struct page_entry decode_page_entry(page_entry_raw);
 
 void init_paging();
+
+void print_vm(pagetable_t);
 
 #endif
