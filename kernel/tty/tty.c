@@ -61,22 +61,25 @@ void reverse(char *str, ship n) {
     }
 }
 
-void scroll() {
-    for (int i=1; i<VGA_HEIGHT; i++) {
-        for (int j=0; j<VGA_WIDTH; j++) {
-            active_tty->tty_buffer[(i-1)*VGA_WIDTH+j] = active_tty->tty_buffer[i*VGA_WIDTH+j];
-        }
-    }
-    active_tty->line = VGA_HEIGHT-1;
-    active_tty->pos = 0;
-}
-
 struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors bg) {
     struct char_with_color res = {
             .character = value,
             .color = fg + (bg << 4)
     };
     return res;
+}
+
+void scroll() {
+    for (int i=1; i<VGA_HEIGHT; i++) {
+        for (int j=0; j<VGA_WIDTH; j++) {
+            active_tty->tty_buffer[(i-1)*VGA_WIDTH+j] = active_tty->tty_buffer[i*VGA_WIDTH+j];
+        }
+    }
+    for (int i = 0; i < VGA_WIDTH; i++) {
+        active_tty->tty_buffer[VGA_WIDTH*(VGA_HEIGHT-1)+i] = make_char(0, 0, 0);
+    }
+    active_tty->line = VGA_HEIGHT-1;
+    active_tty->pos = 0;
 }
 
 void putchar(char *c) {
@@ -103,7 +106,7 @@ void print(const char *string) {
 void itoa(ship num, char* str, ship radix) {
     ship i = 0;
     int is_negative = 0;
-    if (num < 0) {
+    if (num < 0 && radix != 16) {
         is_negative = 1;
         num *= -1;
     }
@@ -115,14 +118,28 @@ void itoa(ship num, char* str, ship radix) {
     } while (num);
 
     if (is_negative) str[i++] = '-';
-    str[i] = 0;
     reverse(str, i);
+    str[i] = 0;
+}
+
+void ptoa(uint64_t num, char* str) {
+    ship i = 0;
+
+    do {
+        int rem = (num % 16);
+        str[i++] = (rem > 9 ? 'a' - 10 : '0') + rem;
+        num /= 16;
+    } while (num);
+
+    reverse(str, i);
+    str[i] = 0;
 }
 
 void printf(const char* format, ...) {
     va_list varargs;
     va_start(varargs, format);
     char digits_buf[100];
+    for (int i = 0; i < 100; i++) digits_buf[i] = 0;
     while (*format) {
         switch (*format) {
             case '%':
@@ -142,6 +159,10 @@ void printf(const char* format, ...) {
                         break;
                     case 'b':
                         itoa(va_arg(varargs, int), digits_buf, 2);
+                        print(digits_buf);
+                        break;
+                    case 'p':
+                        ptoa(va_arg(varargs, uint64_t), digits_buf);
                         print(digits_buf);
                         break;
                     case 's':

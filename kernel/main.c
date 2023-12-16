@@ -9,6 +9,7 @@
 #include "kalloc/kalloc.h"
 #include "memlayout.h"
 #include "lib/include/x86_64.h"
+#include "paging/paging.h"
 
 int kernel_main(){
     setup_idt();
@@ -22,13 +23,18 @@ int kernel_main(){
     printf(
     " CR3: %x\n", rcr3()
     );
+
     print("$ \n");
     printf("Kernel end at address: %d\n", KEND);
     printf("Kernel size: %d\n", KEND - KSTART);
 
-    kinit();
-    //bd_print();
+    kinit(KEND, INIT_PHYSTOP);
+    pagetable_t kernel_table = kvminit(INIT_PHYSTOP, PHYSTOP);
+    printf("kernel table: %p\n", kernel_table);
+    kinit(INIT_PHYSTOP, PHYSTOP);
+    printf("Successfully allocated physical memory up to %p\n", PHYSTOP);
+    printf("%d pages available in allocator\n", count_pages());
 
-    while(1);
+    while(1) {};
     return 0;
 }
