@@ -4,7 +4,6 @@
 //
 
 #include "spinlock.h"
-#include "../lib/include/x86_64.h"
 // Eflags register
 #define FL_INT           0x00000200      // Interrupt Enable
 
@@ -47,8 +46,7 @@ void release(struct spinlock *lk) {
     popcli();
 }
 
-int
-holding(struct spinlock *lock) {
+int holding(struct spinlock *lock) {
     int r;
     pushcli();
     r = lock->is_locked;

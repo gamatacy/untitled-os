@@ -10,7 +10,7 @@
 #include "memlayout.h"
 #include "lib/include/x86_64.h"
 #include "paging/paging.h"
-
+#include "sched/proc.h"
 int kernel_main(){
     setup_idt();
     init_tty();
@@ -34,7 +34,7 @@ int kernel_main(){
     kinit(INIT_PHYSTOP, PHYSTOP);
     printf("Successfully allocated physical memory up to %p\n", PHYSTOP);
     printf("%d pages available in allocator\n", count_pages());
-
+    procinit();
     while(1) {};
     return 0;
 }
