@@ -11,7 +11,7 @@ section .text
 
 switch_context:
     ; Загружаем адрес структуры context из стека в eax
-    mov eax, [rsp + 8]
+    mov rax, [rsp + 8]
 
     ; Загружаем адрес нового контекста из стека в rdx
     mov rdx, [rsp + 16]

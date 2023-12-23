@@ -14,12 +14,12 @@
 #include "../lib/include/memset.h"
 
 struct argument{
-    void* arg_adr;
+    char* value;
     size_t arg_size;
 };
 
 struct thread {
-    struct context context;
+    struct context* context;
     void (*start_function)(void *);
     uint64_t stack;
     uint64_t kstack;
@@ -27,10 +27,8 @@ struct thread {
     struct argument *args;
 };
 
-void init_thread(struct thread *thread, void (*start_function)(void *), void *args);
+struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 
-struct thread *create_thread(void (*start_function)(void *), void *args);
-
-void thread_function(void *args);
+void thread_function(uint32_t);
 
 #endif //UNTITLED_OS_THREADS_H

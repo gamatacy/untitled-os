@@ -8,8 +8,8 @@
 
 struct thread *current_thread = 0;
 
-void thread_function(void *args) {
-    print("Thread started\n");
+void thread_function(uint32_t num) {
+    printf("Thread started with arg %d\n", num);
     while (1) {
 //        printf("Thread is running\n");
 //        yield();
@@ -21,15 +21,27 @@ void init_thread(struct thread *thread, void (*start_function)(void *), int argc
     thread->kstack = kalloc();
     memset(thread->stack, 0, PGSIZE);
     memset(thread->kstack, 0, PGSIZE);
+    thread->kstack += PGSIZE;
+    thread->stack += PGSIZE;
     thread->start_function = start_function;
     thread->argc = argc;
     thread->args = args;
-    void *sp = thread->stack;
-//    makecontext(&thread->context, start_function, 1, args);
+    char *sp = thread->stack;
+    for (int i = argc - 1; i >= 0; i--) {
+        for (int j = args[i].arg_size - 1; j >= 0; j--) {
+            *(--sp) = args->value[j];
+        }
+    }
+
+    sp -= sizeof(uint64_t);
+    *(uint64_t*)(sp) = start_function;
+    sp -= sizeof(struct context);
+    memset(sp, 0, sizeof(struct context));
+    thread->context = (struct context*)sp;
 }
 
-struct thread *create_thread(void (*start_function)(void *), void *args) {
+struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args) {
     struct thread *new_thread = (struct thread *) kalloc();
-    init_thread(new_thread, start_function, args);
+    init_thread(new_thread, start_function, argc, args);
     return new_thread;
 }
