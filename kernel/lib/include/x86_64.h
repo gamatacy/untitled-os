@@ -5,7 +5,29 @@
 
 #ifndef X86_64_H
 #define X86_64_H
-#include "stdint.h"
+
+#include <stdint.h>
+
+struct __attribute__((packed, aligned(8))) context {
+    uint64_t rax;
+    uint64_t rbx;
+    uint64_t rcx;
+    uint64_t rdx;
+    uint64_t rsi;
+    uint64_t rdi;
+    uint64_t rbp;
+    uint64_t r8;
+    uint64_t r9;
+    uint64_t r10;
+    uint64_t r11;
+    uint64_t r12;
+    uint64_t r13;
+    uint64_t r14;
+    uint64_t r15;
+    uint64_t rip;
+};
+
+extern void switch_context(struct context **old, struct context * new);
 
 static inline void
 cli(void) {
@@ -13,8 +35,7 @@ cli(void) {
 }
 
 static inline void
-sti(void)
-{
+sti(void) {
     asm volatile("sti");
 }
 
@@ -49,8 +70,8 @@ static inline uint32_t inl(uint16_t port) {
     return res;
 }
 
-static inline uint xchg(volatile uint *addr, uint newval) {
-    uint result;
+static inline uint32_t xchg(volatile uint32_t *addr, uint32_t newval) {
+    uint32_t result;
 
     // The + in "+m" denotes a read-modify-write operand.
     asm volatile("lock; xchgl %0, %1" :
@@ -62,34 +83,30 @@ static inline uint xchg(volatile uint *addr, uint newval) {
 
 
 static inline uint32_t
-readeflags(void)
-{
+readeflags(void) {
     uint64_t eflags;
     asm volatile("pushf; pop %0" : "=r" (eflags));
     return eflags;
 }
 
 static inline uint64_t
-rcr2(void)
-{
-  uint64_t val;
-  asm volatile("mov %%cr2,%0" : "=r" (val));
-  return val;
+rcr2(void) {
+    uint64_t val;
+    asm volatile("mov %%cr2,%0" : "=r" (val));
+    return val;
 }
 
 
 static inline uint64_t
-rcr3(void)
-{
-  uint64_t val;
-  asm volatile("mov %%cr3,%0" : "=r" (val));
-  return val;
+rcr3(void) {
+    uint64_t val;
+    asm volatile("mov %%cr3,%0" : "=r" (val));
+    return val;
 }
 
 static inline void
-wcr3(uint64_t val)
-{
-    asm("mov %0, %%rax" :: "a"(val));
+wcr3(uint64_t val) {
+    asm("mov %0, %%rax"::"a"(val));
     asm("mov %rax, %cr3");
 }
 

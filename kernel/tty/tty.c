@@ -6,7 +6,8 @@
 
 #include <stdarg.h>
 #include "tty.h"
-#include "../lib/include/stdint.h"
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
 #include "../lib/include/memset.h"
 #define TERMINALS_NUMBER 7
 static tty_structure tty_terminals[TERMINALS_NUMBER];
@@ -22,7 +23,7 @@ void set_bg(enum vga_colors _bg) {
 
 void init_tty(){
     memset(&tty_terminals, 0, sizeof(tty_structure) * TERMINALS_NUMBER);
-    for (ship i = 0; i < TERMINALS_NUMBER; ++i) {
+    for (int i = 0; i < TERMINALS_NUMBER; ++i) {
         (tty_terminals+i)->tty_id = i;
         (tty_terminals+i)->bg = DEFAULT_BG_COLOR;
         (tty_terminals+i)->fg = DEFAULT_FG_COLOR;
@@ -32,7 +33,7 @@ void init_tty(){
     set_tty(0);
 };
 
-void set_tty(uship8 terminal){
+void set_tty(uint8_t terminal){
     if(TERMINALS_NUMBER<=terminal){
         return;
     }
@@ -47,11 +48,11 @@ void clear_current_tty(){
     active_tty->line = 0;
     clear_vga();
 }
-uship8 get_current_tty(){
+uint8_t get_current_tty(){
     return active_tty->tty_id;
 }
 
-void reverse(char *str, ship n) {
+void reverse(char *str, int n) {
     int i = 0;
     int j = n - 1;
     while (i < j) {
@@ -103,8 +104,8 @@ void print(const char *string) {
     write_buffer(active_tty->tty_buffer);
 }
 
-void itoa(ship num, char* str, ship radix) {
-    ship i = 0;
+void itoa(int num, char* str, int radix) {
+    int i = 0;
     int is_negative = 0;
     if (num < 0 && radix != 16) {
         is_negative = 1;
@@ -123,7 +124,7 @@ void itoa(ship num, char* str, ship radix) {
 }
 
 void ptoa(uint64_t num, char* str) {
-    ship i = 0;
+    int i = 0;
 
     do {
         int rem = (num % 16);

@@ -8,7 +8,7 @@
 
 struct proc head;
 struct proc *current_proc;
-
+//pid_t current_pid = 1;
 struct spinlock pid_lock;
 struct spinlock proc_lock;
 
@@ -22,10 +22,11 @@ void procinit(void) {
 }
 
 pid_t generate_pid() {
-    static pid_t pid = 1;
-    int local_pid = pid;
-    pid++;
-
+    acquire(&pid_lock);
+    static pid_t current_pid = 1;
+    int local_pid = current_pid;
+    current_pid++;
+    release(&pid_lock);
     return local_pid;
 }
 
@@ -33,30 +34,30 @@ struct proc *allocproc(void) {
     struct proc *proc;
     proc = kalloc();
     proc->state = NEW;
-
+    acquire(&proc_lock);
     proc->prev = &head;
     proc->next = head.next;
     head.next->prev = proc;
     head.next = proc;
+    release(&proc_lock);
     proc->pid = generate_pid();
     proc->kstack = (uint64_t) kalloc();
-
 }
 
-//
-//void set_proc_state(struct proc *const proc, enum proc_state state) {
-//    proc->state = state;
-//}
+
+void set_proc_state(struct proc *const proc, enum proc_state state) {
+    proc->state = state;
+}
 //
 //void passive_sleep() {
 //
 //}
 //
-//int exit_proc(int status) {
-//    set_proc_state(current_proc, EXIT);
-//    //scheduler();
-//    return 0;
-//}
+int exit_proc(int status) {
+    set_proc_state(current_proc, EXIT);
+    //scheduler();
+    return 0;
+}
 //
 //pid_t get_pid() {
 //    return current_proc->pid;

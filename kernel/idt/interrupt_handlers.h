@@ -4,7 +4,8 @@
 
 #ifndef UNTITLED_OS_INTERRUPT_HANDLERS_H
 #define UNTITLED_OS_INTERRUPT_HANDLERS_H
-#include "../lib/include/stdint.h"
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
 
 void keyboard_handler_wrapper();
 void keyboard_handler();

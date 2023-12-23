@@ -3,7 +3,8 @@
 // Copyright (c) 2023 SHIPOS. All rights reserved.
 //
 
-#include "../lib/include/stdint.h"
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
 #include "../lib/include/x86_64.h"
 #ifndef PIC_H
 #define PIC_H

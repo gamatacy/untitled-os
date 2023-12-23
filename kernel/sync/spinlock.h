@@ -6,10 +6,10 @@
 #ifndef UNTITLED_OS_SPINLOCK_H
 #define UNTITLED_OS_SPINLOCK_H
 
-#include "../lib/include/stdint.h"
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
 #include "../sched/proc.h"
 #include "../lib/include/x86_64.h"
-//#include "../../kernel/sched/proc.h"
 
 struct spinlock {
     uint8_t is_locked;

@@ -11,11 +11,12 @@
 #include "lib/include/x86_64.h"
 #include "paging/paging.h"
 #include "sched/proc.h"
+#include "sched/threads.h"
 int kernel_main(){
     setup_idt();
     init_tty();
     
-    for (uship8 i=0; i < TERMINALS_NUMBER; i++) {
+    for (uint8_t i=0; i < TERMINALS_NUMBER; i++) {
         set_tty(i);
         printf("TTY %d\n", i);
     }
@@ -34,7 +35,8 @@ int kernel_main(){
     kinit(INIT_PHYSTOP, PHYSTOP);
     printf("Successfully allocated physical memory up to %p\n", PHYSTOP);
     printf("%d pages available in allocator\n", count_pages());
-    procinit();
+//    procinit();
+    create_thread(thread_function, 0);
     while(1) {};
     return 0;
 }
