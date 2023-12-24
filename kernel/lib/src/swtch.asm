@@ -11,10 +11,8 @@ section .text
 
 switch_context:
     ; Загружаем адрес структуры context из стека в eax
-    mov rax, [rsp + 8]
 
     ; Загружаем адрес нового контекста из стека в rdx
-    mov rdx, [rsp + 16]
 
     ; Сохраняем значения callee-saved регистров
     push r15
@@ -34,8 +32,8 @@ switch_context:
     push rax
 
     ; Переключаем стеки
-    mov [rax], rsp
-    mov rsp, rdx
+    mov [rdi], rsp
+    mov rsp, rsi
 
     ; Восстанавливаем значения callee-saved регистров нового контекста
     pop rax
