@@ -4,6 +4,9 @@
 //
 
 #include "scheduler.h"
-void scheduler(){
+
+
+
+void thread_scheduler(){
     
 }

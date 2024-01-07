@@ -6,6 +6,8 @@
 #include "threads.h"
 #include <ucontext.h>
 
+struct thread_list *thread_states [NUMBER_OF_SCHED_STATES];
+
 struct thread *current_thread = 0;
 
 void thread_function(uint32_t num) {
@@ -14,6 +16,10 @@ void thread_function(uint32_t num) {
 //        printf("Thread is running\n");
 //        yield();
     }
+}
+
+void first_init_in_main(){
+
 }
 
 void init_thread(struct thread *thread, void (*start_function)(void *), int argc, struct argument *args) {

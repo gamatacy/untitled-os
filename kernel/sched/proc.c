@@ -12,11 +12,14 @@ struct proc *current_proc;
 struct spinlock pid_lock;
 struct spinlock proc_lock;
 
+struct proc_list *proc_states [NUMBER_OF_SCHED_STATES];
+
 void procinit(void) {
     head.pid = -1;
     head.state = UNUSED;
     head.next = &head;
     head.prev = &head;
+
     initlock(&pid_lock, "pid_lock");
     initlock(&proc_lock, "proc_lock");
 }
@@ -46,7 +49,7 @@ struct proc *allocproc(void) {
 }
 
 
-void set_proc_state(struct proc *const proc, enum proc_state state) {
+void set_proc_state(struct proc *const proc, enum sched_states state) {
     proc->state = state;
 }
 

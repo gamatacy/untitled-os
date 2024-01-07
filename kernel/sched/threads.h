@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <inttypes.h>
 #include "../lib/include/memset.h"
+#include "scheduler.h"
 
 struct argument {
     char *value;
@@ -20,13 +21,12 @@ struct argument {
 
 struct thread {
     struct context *context;
-
     void (*start_function)(void *);
-
     uint64_t stack;
     uint64_t kstack;
     size_t argc;
     struct argument *args;
+    enum sched_states state;
 };
 
 struct thread_node {

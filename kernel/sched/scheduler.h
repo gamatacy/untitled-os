@@ -5,5 +5,21 @@
 
 #ifndef UNTITLED_OS_SHEDULER_H
 #define UNTITLED_OS_SHEDULER_H
-void scheduler();
+
+#include "threads.h"
+
+#define NUMBER_OF_SCHED_STATES 7
+
+enum sched_states {
+    NEW = 0,
+    RUNNABLE,
+    ON_CPU,
+    WAIT,
+    INTERRUPTIBLE,
+    EXIT,
+    UNUSED
+};
+
+void thread_scheduler();
+
 #endif //UNTITLED_OS_SHEDULER_H
