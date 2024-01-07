@@ -12,10 +12,11 @@ void initlock(struct spinlock *lock, char *name) {
     lock->name = name;
 }
 
-void acquire(struct spinlock *lk) {
+//bool function
+uint8_t acquire(struct spinlock *lk) {
     pushcli(); // disable interrupts to avoid deadlock.
     if (holding(lk))
-        panic("acquire");
+        return 1;
 
     // The xchg is atomic.
     while (xchg(&lk->is_locked, 1) != 0);
@@ -24,7 +25,7 @@ void acquire(struct spinlock *lk) {
     // past this point, to ensure that the critical section's memory
     // references happen after the lock is acquired.
     __sync_synchronize();
-
+    return 0;
 }
 
 void release(struct spinlock *lk) {

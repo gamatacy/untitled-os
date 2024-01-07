@@ -13,6 +13,7 @@
 #include "../tty/tty.h"
 #include "../sync/spinlock.h"
 #include "../../kernel/kalloc/kalloc.h"
+
 typedef size_t pid_t;
 
 enum proc_state {
@@ -41,7 +42,24 @@ struct cpu {
     struct current_proc *proc;           // The process running on this cpu or null
 };
 
+struct proc_node {
+    struct proc *data;
+    struct proc_node *next;
+};
+
+struct proc_list {
+    struct proc_node *head;
+    struct proc_node *tail;
+};
+
 struct cpu current_cpu;
+
+void init_proc_list(struct proc_list *list);
+
+void append_to_list(struct proc_list *list, struct proc proc);
+
+void pop_from_list(struct proc_list *list);
+
 
 void procinit(void);
 

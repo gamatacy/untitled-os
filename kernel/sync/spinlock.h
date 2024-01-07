@@ -17,7 +17,7 @@ struct spinlock {
 };
 
 void initlock(struct spinlock *lock, char *name);
-void acquire(struct spinlock *lk);
+uint8_t acquire(struct spinlock *lk);
 void release(struct spinlock *lk);
 int holding(struct spinlock *lock);
 

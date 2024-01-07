@@ -41,13 +41,15 @@ struct proc *allocproc(void) {
     head.next = proc;
     release(&proc_lock);
     proc->pid = generate_pid();
-    proc->kstack = (uint64_t) kalloc();
+    proc->kstack = (uint64_t)
+    kalloc();
 }
 
 
 void set_proc_state(struct proc *const proc, enum proc_state state) {
     proc->state = state;
 }
+
 //
 //void passive_sleep() {
 //
@@ -58,6 +60,7 @@ int exit_proc(int status) {
     //scheduler();
     return 0;
 }
+
 //
 //pid_t get_pid() {
 //    return current_proc->pid;
@@ -89,3 +92,41 @@ void panic(char *message) {
 }
 
 struct proc forkexec();
+
+
+void init_proc_list(struct proc_list *list) {
+    if (list == 0) {
+        list = kalloc();
+        list->head = 0;
+        list->tail = 0;
+    } else {
+        //todo очистить список, если уже существует
+        list->head = 0;
+        list->tail = 0;
+    }
+}
+
+void push_back_proc_list(struct proc_list *list, struct proc *proc) {
+    struct proc_node *new_node = kalloc();
+    new_node->data = proc;
+    new_node->next = 0;
+    if (list->tail != 0) {
+        list->tail->next = new_node;
+    } else {
+        list->head = list->tail = new_node;
+    }
+}
+
+void push_front_proc_list(struct proc_list *list, struct proc *proc) {
+    struct proc_node *new_node = kalloc();
+    new_node->data = proc;
+    new_node->next = 0;
+    if (list->head != 0) {
+        new_node->next = list->head;
+    }
+    else{
+        list->tail = new_node;
+    }
+    list->head = new_node;
+}
+
