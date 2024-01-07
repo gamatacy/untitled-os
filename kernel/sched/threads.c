@@ -18,8 +18,14 @@ void thread_function(uint32_t num) {
     }
 }
 
-void first_init_in_main(){
+void init_thread_states(){
+    for (int i = 0; i < NUMBER_OF_SCHED_STATES; ++i) {
+        init_thread_list(thread_states[i]);
+    }
+}
 
+struct thread_list* get_thrlist_state(enum sched_states state){
+    return thread_states[state];
 }
 
 void init_thread(struct thread *thread, void (*start_function)(void *), int argc, struct argument *args) {
@@ -50,6 +56,12 @@ struct thread *create_thread(void (*start_function)(void *), int argc, struct ar
     struct thread *new_thread = (struct thread *) kalloc();
     init_thread(new_thread, start_function, argc, args);
     return new_thread;
+}
+
+void set_thread_state(struct thread *const thread, enum sched_states state){
+    //todo удалить нужный thread из списка
+    thread->state = state;
+    push_back_thread_list(thread_states[state], thread);
 }
 
 void init_thread_list(struct thread_list *list) {

@@ -12,7 +12,17 @@
 #include <stddef.h>
 #include <inttypes.h>
 #include "../lib/include/memset.h"
-#include "scheduler.h"
+#define NUMBER_OF_SCHED_STATES 7
+
+enum sched_states {
+    NEW = 0,
+    RUNNABLE,
+    ON_CPU,
+    WAIT,
+    INTERRUPTIBLE,
+    EXIT,
+    UNUSED
+};
 
 struct argument {
     char *value;
@@ -42,6 +52,8 @@ struct thread_list {
 
 void init_thread_list(struct thread_list *list);
 
+struct thread_list* get_thrlist_state(enum sched_states state);
+
 void push_back_thread_list(struct thread_list *list, struct thread *thread);
 
 void push_front_thread_list(struct thread_list *list, struct thread *thread);
@@ -53,5 +65,7 @@ struct thread *pop_back_thread_list(struct thread_list *list);
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 
 void thread_function(uint32_t);
+
+void set_thread_state(struct thread *const, enum sched_states);
 
 #endif //UNTITLED_OS_THREADS_H

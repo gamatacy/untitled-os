@@ -12,14 +12,26 @@ struct proc *current_proc;
 struct spinlock pid_lock;
 struct spinlock proc_lock;
 
-struct proc_list *proc_states [NUMBER_OF_SCHED_STATES];
+struct proc_list *proc_states[NUMBER_OF_SCHED_STATES];
+
+
+void init_proc_states() {
+    for (int i = 0; i < NUMBER_OF_SCHED_STATES; ++i) {
+        init_proc_list(proc_states[i]);
+    }
+}
+
+struct proc_list *get_proclist_state(enum sched_states state) {
+    return proc_states[state];
+}
+
 
 void procinit(void) {
+    init_proc_states();
     head.pid = -1;
     head.state = UNUSED;
     head.next = &head;
     head.prev = &head;
-
     initlock(&pid_lock, "pid_lock");
     initlock(&proc_lock, "proc_lock");
 }
@@ -50,7 +62,9 @@ struct proc *allocproc(void) {
 
 
 void set_proc_state(struct proc *const proc, enum sched_states state) {
+    //todo удалить нужный proc из списка
     proc->state = state;
+    push_back_proc_list(proc_states[state], proc);
 }
 
 //

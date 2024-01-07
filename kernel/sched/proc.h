@@ -13,7 +13,8 @@
 #include "../tty/tty.h"
 #include "../sync/spinlock.h"
 #include "../../kernel/kalloc/kalloc.h"
-#include "scheduler.h"
+#include "threads.h"
+
 typedef size_t pid_t;
 
 
@@ -46,16 +47,17 @@ struct proc_list {
 
 struct cpu current_cpu;
 
+struct proc_list *get_proclist_state(enum sched_states state);
+
 void init_proc_list(struct proc_list *list);
 
 void push_back_proc_list(struct proc_list *list, struct proc *proc);
 
 void push_front_proc_list(struct proc_list *list, struct proc *proc);
 
-struct proc* pop_front_proc_list(struct proc_list *list);
+struct proc *pop_front_proc_list(struct proc_list *list);
 
 struct proc *pop_back_proc_list(struct proc_list *list);
-
 
 void procinit(void);
 
