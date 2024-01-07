@@ -13,22 +13,14 @@
 #include "../tty/tty.h"
 #include "../sync/spinlock.h"
 #include "../../kernel/kalloc/kalloc.h"
+#include "threads.h"
 
 typedef size_t pid_t;
 
-enum proc_state {
-    NEW = 0,
-    RUNNABLE,
-    ON_CPU,
-    WAIT,
-    INTERRUPTIBLE,
-    EXIT,
-    UNUSED
-};
 
 struct proc {
     pid_t pid;
-    enum proc_state state;
+    enum sched_states state;
     int killed;
     int xstate;
     uint64_t kstack;
@@ -45,6 +37,7 @@ struct cpu {
 struct proc_node {
     struct proc *data;
     struct proc_node *next;
+    struct proc_node *prev;
 };
 
 struct proc_list {
@@ -54,16 +47,21 @@ struct proc_list {
 
 struct cpu current_cpu;
 
+struct proc_list *get_proclist_state(enum sched_states state);
+
 void init_proc_list(struct proc_list *list);
 
-void append_to_list(struct proc_list *list, struct proc proc);
+void push_back_proc_list(struct proc_list *list, struct proc *proc);
 
-void pop_from_list(struct proc_list *list);
+void push_front_proc_list(struct proc_list *list, struct proc *proc);
 
+struct proc *pop_front_proc_list(struct proc_list *list);
+
+struct proc *pop_back_proc_list(struct proc_list *list);
 
 void procinit(void);
 
-void set_proc_state(struct proc *const, enum proc_state);
+void set_proc_state(struct proc *const, enum sched_states);
 
 void passive_sleep();
 

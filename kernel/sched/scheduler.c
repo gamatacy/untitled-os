@@ -4,6 +4,12 @@
 //
 
 #include "scheduler.h"
-void scheduler(){
-    
+
+
+
+void thread_scheduler(){
+    struct thread_list* threadList = get_thrlist_state(RUNNABLE);
+}
+void proc_scheduler(){
+    struct proc_list* procList = get_proclist_state(RUNNABLE);
 }

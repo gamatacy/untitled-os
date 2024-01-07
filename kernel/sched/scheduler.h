@@ -5,5 +5,11 @@
 
 #ifndef UNTITLED_OS_SHEDULER_H
 #define UNTITLED_OS_SHEDULER_H
-void scheduler();
+#include "proc.h"
+#include "threads.h"
+
+void thread_scheduler();
+
+void proc_scheduler();
+
 #endif //UNTITLED_OS_SHEDULER_H
