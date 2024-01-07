@@ -111,22 +111,74 @@ void push_back_proc_list(struct proc_list *list, struct proc *proc) {
     new_node->data = proc;
     new_node->next = 0;
     if (list->tail != 0) {
+        new_node->prev = list->tail;
         list->tail->next = new_node;
     } else {
-        list->head = list->tail = new_node;
+        if (list->head != 0) {
+            panic("unexpected error. Head of proc list can't be null");
+        }
+        new_node->prev = 0;
+        list->head = new_node;
     }
+    list->tail = new_node;
 }
 
 void push_front_proc_list(struct proc_list *list, struct proc *proc) {
     struct proc_node *new_node = kalloc();
     new_node->data = proc;
-    new_node->next = 0;
+    new_node->prev = 0;
     if (list->head != 0) {
         new_node->next = list->head;
-    }
-    else{
+        list->head->prev = new_node;
+    } else {
+        if (list->tail != 0) {
+            panic("unexpected error. Tail of proc list can't be null");
+        }
+        new_node->next = 0;
         list->tail = new_node;
     }
     list->head = new_node;
+}
+
+struct proc *pop_front_proc_list(struct proc_list *list) {
+    struct proc *pop_proc;
+    struct proc_node *pop_node;
+    if (list->head == 0) {
+        panic("Pop from empty proc list");
+    }
+    if (list->tail == 0) {
+        panic("unexpected error. Tail of proc list can't be null(pop_front_proc_list)");
+    }
+    pop_node = list->head;
+    pop_proc = pop_node->data;
+    if (list->head == list->tail) {
+        list->head = list->tail = 0;
+    } else {
+        list->head = list->head->next;
+        list->head->prev = 0;
+    }
+    kfree(pop_node);
+    return pop_proc;
+}
+
+struct proc *pop_back_proc_list(struct proc_list *list) {
+    struct proc *pop_proc;
+    struct proc_node *pop_node;
+    if (list->head == 0) {
+        panic("Pop from empty proc list");
+    }
+    if (list->tail == 0) {
+        panic("unexpected error. Tail of proc list can't be null(pop_back_proc_list)");
+    }
+    pop_node = list->tail;
+    pop_proc = pop_node->data;
+    if (list->head == list->tail) {
+        list->head = list->tail = 0;
+    } else {
+        list->tail = list->tail->prev;
+        list->tail->next = 0;
+    }
+    kfree(pop_node);
+    return pop_proc;
 }
 

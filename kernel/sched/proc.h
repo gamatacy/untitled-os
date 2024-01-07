@@ -45,6 +45,7 @@ struct cpu {
 struct proc_node {
     struct proc *data;
     struct proc_node *next;
+    struct proc_node *prev;
 };
 
 struct proc_list {
@@ -56,9 +57,12 @@ struct cpu current_cpu;
 
 void init_proc_list(struct proc_list *list);
 
-void append_to_list(struct proc_list *list, struct proc proc);
+void push_back_proc_list(struct proc_list *list, struct proc *proc);
 
-void pop_from_list(struct proc_list *list);
+void push_front_proc_list(struct proc_list *list, struct proc *proc);
+
+struct proc* pop_front_proc_list(struct proc_list *list);
+
 
 
 void procinit(void);
