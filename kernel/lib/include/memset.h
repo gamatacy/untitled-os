@@ -5,6 +5,7 @@
 
 #ifndef UNTITLED_OS_MEMSET_H
 #define UNTITLED_OS_MEMSET_H
-#include "stdint.h"
+#include <stdint.h>
+#include <stddef.h>
 void *memset(void *ptr, int value, size_t num);
 #endif //UNTITLED_OS_MEMSET_H

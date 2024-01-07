@@ -3,7 +3,8 @@
 // Copyright (c) 2023 SHIPOS. All rights reserved.
 //
 
-#include "../lib/include/stdint.h"
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
 #include "pic.h"
 
 void pic_send_eoi(uint8_t irq) {

@@ -9,7 +9,7 @@
 #include "../pit/pit.h"
 
 #define MAX_INTERRUPTS 256
-void make_interrupt(struct InterruptDescriptor64* idt, ship array_index, uintptr_t handler){
+void make_interrupt(struct InterruptDescriptor64* idt, int array_index, uintptr_t handler){
     if(array_index>=MAX_INTERRUPTS)return;
     idt[array_index].offset_1 = (uint16_t)handler;
     idt[array_index].selector = 0x08; // Селектор сегмента кода (обычно 0x08)

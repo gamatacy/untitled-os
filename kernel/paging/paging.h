@@ -8,7 +8,8 @@
 #define PAGING_H
 
 #include "stdbool.h"
-#include "../lib/include/stdint.h"
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
 
 #define ENTRIES_COUNT 512
 
@@ -44,7 +45,7 @@ struct page_entry {
     uint8_t ign1; // 4 bits
 
     // Physical address of the page referenced by this entry
-    ushipptr_t address; // 36 bits
+    uintptr_t address; // 36 bits
 
     uint32_t ign2; // 15 bits ?
 

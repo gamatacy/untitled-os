@@ -9,7 +9,8 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_COLOR 7
-#include "../lib/include/stdint.h"
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
 #define DEFAULT_BG_COLOR VGA_COLOR_WHITE
 #define DEFAULT_FG_COLOR VGA_COLOR_BLACK
 enum vga_colors{
@@ -31,8 +32,8 @@ enum vga_colors{
     VGA_COLOR_WHITE = 15
 };
 struct __attribute__((packed)) char_with_color {
-    uship8 character;
-    uship8 color;
+    uint8_t character;
+    uint8_t color;
 };
 
 

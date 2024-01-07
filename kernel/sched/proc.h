@@ -6,13 +6,15 @@
 
 #ifndef UNTITLED_OS_PROC_H
 #define UNTITLED_OS_PROC_H
-#define MAXPROCS 10
-
-#include "../lib/include/stdint.h"
+#define MAXPROCS 100
+//#include "../lib/include/stdint.h"
+#include <inttypes.h>
+#include <stddef.h>
 #include "../tty/tty.h"
+#include "../sync/spinlock.h"
+#include "../../kernel/kalloc/kalloc.h"
 
-typedef size_ship pid_t;
-
+typedef size_t pid_t;
 
 enum proc_state {
     NEW = 0,
@@ -20,15 +22,19 @@ enum proc_state {
     ON_CPU,
     WAIT,
     INTERRUPTIBLE,
-    EXIT
+    EXIT,
+    UNUSED
 };
 
 struct proc {
     pid_t pid;
     enum proc_state state;
-    struct proc *parent;
+    int killed;
+    int xstate;
+    uint64_t kstack;
+    struct proc *prev;
+    struct proc *next;
 };
-
 
 struct cpu {
     int ncli;                    // Depth of pushcli nesting.
@@ -36,7 +42,26 @@ struct cpu {
     struct current_proc *proc;           // The process running on this cpu or null
 };
 
+struct proc_node {
+    struct proc *data;
+    struct proc_node *next;
+};
+
+struct proc_list {
+    struct proc_node *head;
+    struct proc_node *tail;
+};
+
 struct cpu current_cpu;
+
+void init_proc_list(struct proc_list *list);
+
+void append_to_list(struct proc_list *list, struct proc proc);
+
+void pop_from_list(struct proc_list *list);
+
+
+void procinit(void);
 
 void set_proc_state(struct proc *const, enum proc_state);
 

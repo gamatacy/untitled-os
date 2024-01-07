@@ -4,7 +4,6 @@
 //
 
 #include "spinlock.h"
-#include "../lib/include/x86_64.h"
 // Eflags register
 #define FL_INT           0x00000200      // Interrupt Enable
 
@@ -13,10 +12,11 @@ void initlock(struct spinlock *lock, char *name) {
     lock->name = name;
 }
 
-void acquire(struct spinlock *lk) {
+//bool function
+uint8_t acquire(struct spinlock *lk) {
     pushcli(); // disable interrupts to avoid deadlock.
     if (holding(lk))
-        panic("acquire");
+        return 1;
 
     // The xchg is atomic.
     while (xchg(&lk->is_locked, 1) != 0);
@@ -25,7 +25,7 @@ void acquire(struct spinlock *lk) {
     // past this point, to ensure that the critical section's memory
     // references happen after the lock is acquired.
     __sync_synchronize();
-
+    return 0;
 }
 
 void release(struct spinlock *lk) {
@@ -47,8 +47,7 @@ void release(struct spinlock *lk) {
     popcli();
 }
 
-int
-holding(struct spinlock *lock) {
+int holding(struct spinlock *lock) {
     int r;
     pushcli();
     r = lock->is_locked;
