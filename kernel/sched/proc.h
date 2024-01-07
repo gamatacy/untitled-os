@@ -63,6 +63,7 @@ void push_front_proc_list(struct proc_list *list, struct proc *proc);
 
 struct proc* pop_front_proc_list(struct proc_list *list);
 
+struct proc *pop_back_proc_list(struct proc_list *list);
 
 
 void procinit(void);
