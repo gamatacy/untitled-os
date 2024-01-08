@@ -4,9 +4,8 @@
 //
 
 #include "threads.h"
-#include <ucontext.h>
 
-struct thread_list *thread_states [NUMBER_OF_SCHED_STATES];
+struct looped_thrlist *thread_states[NUMBER_OF_SCHED_STATES];
 
 struct thread *current_thread = 0;
 
@@ -18,13 +17,13 @@ void thread_function(uint32_t num) {
     }
 }
 
-void init_thread_states(){
+void init_thread_states() {
     for (int i = 0; i < NUMBER_OF_SCHED_STATES; ++i) {
         init_thread_list(thread_states[i]);
     }
 }
 
-struct thread_list* get_thrlist_state(enum sched_states state){
+struct looped_thrlist *get_thrlist_state(enum sched_states state) {
     return thread_states[state];
 }
 
@@ -46,10 +45,10 @@ void init_thread(struct thread *thread, void (*start_function)(void *), int argc
     }
 
     sp -= sizeof(uint64_t);
-    *(uint64_t*)(sp) = start_function;
+    *(uint64_t * )(sp) = start_function;
     sp -= sizeof(struct context) - sizeof(uint64_t);
-    memset(sp, 0, sizeof(struct context)- sizeof(uint64_t));
-    thread->context = (struct context*)sp;
+    memset(sp, 0, sizeof(struct context) - sizeof(uint64_t));
+    thread->context = (struct context *) sp;
 }
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args) {
@@ -58,45 +57,48 @@ struct thread *create_thread(void (*start_function)(void *), int argc, struct ar
     return new_thread;
 }
 
-void set_thread_state(struct thread *const thread, enum sched_states state){
+void set_thread_state(struct thread *const thread, enum sched_states state) {
     //todo удалить нужный thread из списка
     thread->state = state;
     push_back_thread_list(thread_states[state], thread);
 }
 
-void init_thread_list(struct thread_list *list) {
+void init_thread_list(struct looped_thrlist *list) {
     if (list == 0) {
         list = kalloc();
         list->head = 0;
         list->tail = 0;
     } else {
-        //todo очистить список, если уже существует
+        while (list->head != 0) {
+            pop_back_thread_list(list);
+        }
         list->head = 0;
         list->tail = 0;
     }
 }
 
-void push_back_thread_list(struct thread_list *list, struct thread *thread) {
-    struct thread_node *new_node = kalloc();
+void push_back_thread_list(struct looped_thrlist *list, struct thread *thread) {
+    struct thr_node *new_node = kalloc();
     new_node->data = thread;
-    new_node->next = 0;
+    new_node->next = list->head;
     if (list->tail != 0) {
-        new_node->prev = list->tail;
+        list->head->prev = new_node;
         list->tail->next = new_node;
+        new_node->prev = list->tail;
     } else {
         if (list->head != 0) {
             panic("unexpected error. Head of thread list can't be null");
         }
-        new_node->prev = 0;
+        new_node->prev = list->head;
         list->head = new_node;
     }
     list->tail = new_node;
 }
 
-void push_front_thread_list(struct thread_list *list, struct thread *thread) {
-    struct thread_node *new_node = kalloc();
+void push_front_thread_list(struct looped_thrlist *list, struct thread *thread) {
+    struct thr_node *new_node = kalloc();
     new_node->data = thread;
-    new_node->prev = 0;
+    new_node->prev = list->tail;
     if (list->head != 0) {
         new_node->next = list->head;
         list->head->prev = new_node;
@@ -110,9 +112,9 @@ void push_front_thread_list(struct thread_list *list, struct thread *thread) {
     list->head = new_node;
 }
 
-struct thread *pop_front_thread_list(struct thread_list *list) {
+struct thread *pop_front_thread_list(struct looped_thrlist *list) {
     struct thread *pop_thread;
-    struct thread_node *pop_node;
+    struct thr_node *pop_node;
     if (list->head == 0) {
         panic("Pop from empty thread list");
     }
@@ -131,9 +133,9 @@ struct thread *pop_front_thread_list(struct thread_list *list) {
     return pop_thread;
 }
 
-struct thread *pop_back_thread_list(struct thread_list *list) {
+struct thread *pop_back_thread_list(struct looped_thrlist *list) {
     struct thread *pop_thread;
-    struct thread_node *pop_node;
+    struct thr_node *pop_node;
     if (list->head == 0) {
         panic("Pop from empty thread list");
     }

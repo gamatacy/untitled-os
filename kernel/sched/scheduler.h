@@ -10,6 +10,4 @@
 
 void thread_scheduler();
 
-void proc_scheduler();
-
 #endif //UNTITLED_OS_SHEDULER_H

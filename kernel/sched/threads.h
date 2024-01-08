@@ -12,14 +12,13 @@
 #include <stddef.h>
 #include <inttypes.h>
 #include "../lib/include/memset.h"
-#define NUMBER_OF_SCHED_STATES 7
+#define NUMBER_OF_SCHED_STATES 6
 
 enum sched_states {
     NEW = 0,
     RUNNABLE,
     ON_CPU,
     WAIT,
-    INTERRUPTIBLE,
     EXIT,
     UNUSED
 };
@@ -30,6 +29,7 @@ struct argument {
 };
 
 struct thread {
+  //  struct thr_node *item;
     struct context *context;
     void (*start_function)(void *);
     uint64_t stack;
@@ -39,28 +39,28 @@ struct thread {
     enum sched_states state;
 };
 
-struct thread_node {
+struct thr_node {
     struct thread *data;
-    struct thread_node *next;
-    struct thread_node *prev;
+    struct thr_node *next;
+    struct thr_node *prev;
 };
 
-struct thread_list {
-    struct thread_node *head;
-    struct thread_node *tail;
+struct looped_thrlist {
+    struct thr_node *head;
+    struct thr_node *tail;
 };
 
-void init_thread_list(struct thread_list *list);
+void init_thread_list(struct looped_thrlist *list);
 
-struct thread_list* get_thrlist_state(enum sched_states state);
+struct looped_thrlist* get_thrlist_state(enum sched_states state);
 
-void push_back_thread_list(struct thread_list *list, struct thread *thread);
+void push_back_thread_list(struct looped_thrlist *list, struct thread *thread);
 
-void push_front_thread_list(struct thread_list *list, struct thread *thread);
+void push_front_thread_list(struct looped_thrlist *list, struct thread *thread);
 
-struct thread *pop_front_thread_list(struct thread_list *list);
+struct thread *pop_front_thread_list(struct looped_thrlist *list);
 
-struct thread *pop_back_thread_list(struct thread_list *list);
+struct thread *pop_back_thread_list(struct looped_thrlist *list);
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 
