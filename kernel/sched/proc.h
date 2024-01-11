@@ -17,7 +17,6 @@
 
 typedef size_t pid_t;
 
-
 struct proc {
     pid_t pid;
     enum sched_states state;
@@ -45,7 +44,7 @@ struct proc_list {
     struct proc_node *tail;
 };
 
-struct cpu current_cpu;
+extern struct cpu current_cpu;
 
 struct proc_list *get_proclist_state(enum sched_states state);
 
