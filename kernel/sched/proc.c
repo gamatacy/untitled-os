@@ -6,6 +6,7 @@
 
 #include "proc.h"
 
+struct cpu current_cpu;
 struct proc head;
 struct proc *current_proc;
 //pid_t current_pid = 1;
