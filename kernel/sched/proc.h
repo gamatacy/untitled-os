@@ -27,7 +27,7 @@ struct proc {
 struct cpu {
     int ncli;                    // Depth of pushcli nesting.
     int intena;                  // Were interrupts enabled before pushcli?
-    struct current_proc *proc;   // The process running on this cpu or null
+    struct thread *thread;   // The thread running on this cpu or null
 };
 
 struct proc_node {
