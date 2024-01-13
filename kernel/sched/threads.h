@@ -12,7 +12,6 @@
 #include <stddef.h>
 #include <inttypes.h>
 #include "../lib/include/memset.h"
-#include "proc.h"
 #include "sched_states.h"
 
 struct argument {
@@ -28,8 +27,6 @@ struct thread {
     size_t argc;
     struct argument *args;
     enum sched_states state;
-    struct proc *proc;
-    struct thread_node *node;
 };
 
 struct thread_node {
@@ -48,7 +45,7 @@ struct thread *peek_thread_list(struct thread_node *list);
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 
-void change_thread_state(struct thread *thread, enum sched_states state);
+void change_thread_state(struct thread *thread, enum sched_states new_state);
 
 void thread_function(int argc, struct argument *args);
 

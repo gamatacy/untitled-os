@@ -21,13 +21,13 @@ typedef size_t pid_t;
 struct proc {
     pid_t pid;
     int killed;
-    struct thread_node *thread_states[NUMBER_OF_SCHED_STATES];
+    struct thread_node *threads;
 };
 
 struct cpu {
-    int ncli;                    // Depth of pushcli nesting.
-    int intena;                  // Were interrupts enabled before pushcli?
-    struct thread *thread;   // The thread running on this cpu or null
+    int ncli;                        // Depth of pushcli nesting.
+    int intena;                      // Were interrupts enabled before pushcli?
+    struct thread *current_thread;   // The thread running on this cpu or null
 };
 
 struct proc_node {
