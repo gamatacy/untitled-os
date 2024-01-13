@@ -35,27 +35,14 @@ int kernel_main(){
     kinit(INIT_PHYSTOP, PHYSTOP);
     printf("Successfully allocated physical memory up to %p\n", PHYSTOP);
     printf("%d pages available in allocator\n", count_pages());
-    init_thread_states();
 
-
-
-    uint32_t arg_value = 52;
-    struct argument arg;
-    arg.arg_size = sizeof(uint32_t);
-    arg.value = &arg_value;
-    struct thread *new_thread = create_thread(thread_function, 1, &arg);
+    struct proc_node *init_proc_node = procinit();
+    struct thread *init_thread = peek_thread_list(init_proc_node->data->thread_states[RUNNABLE]);
     struct context kernel_context;
-    struct context* kernel_context_ptr = &kernel_context;
+    struct context *kernel_context_ptr = &kernel_context;
 
-    printf("Context address: %p\n", new_thread->context);
-    printf("New thread return RIP: %p\n", *(uint64_t*)(new_thread->context + 1));
-    printf("Thread function address: %p\n", thread_function);
+    switch_context(&kernel_context_ptr, init_thread->context);
 
-    struct looped_thrlist** local = get_thrlist_state(RUNNABLE);
-    push_back_thread_list(local, new_thread);
-    print("lol");
-    pop_back_thread_list(local);
-    switch_context(&kernel_context_ptr, new_thread->context);
     while(1) {};
     return 0;
 }

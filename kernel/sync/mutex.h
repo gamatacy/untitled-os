@@ -8,16 +8,16 @@
 
 #include "spinlock.h"
 
-struct mutex {
-    struct spinlock spinlock;
-    struct proc_list list;
-};
+// struct mutex {
+//     struct spinlock spinlock;
+//     struct proc_list list;
+// };
 
-void init_mutex(struct spinlock *lock, char *name);
+// void init_mutex(struct spinlock *lock, char *name);
 
-void acquire_mutex(struct mutex *lk);
+// void acquire_mutex(struct mutex *lk);
 
-void release_mutex(struct mutex *lk);
+// void release_mutex(struct mutex *lk);
 
 
 #endif //UNTITLED_OS_MUTEX_H
