@@ -37,6 +37,7 @@ struct proc_node {
 };
 
 extern struct cpu current_cpu;
+extern struct proc_node *proc_list;
 
 void push_proc_list(struct proc_node **list, struct proc *proc);
 
@@ -44,7 +45,7 @@ struct proc *pop_proc_list(struct proc_node **list);
 
 void shift_proc_list(struct proc_node **list);
 
-struct proc *peek_proc_list(struct proc_node **list);
+struct proc *peek_proc_list(struct proc_node *list);
 
 struct proc_node *procinit(void);
 

@@ -103,11 +103,11 @@ void shift_proc_list(struct proc_node **list) {
     }
 }
 
-struct proc *peek_proc_list(struct proc_node **list) {
-    if (*list == 0) {
+struct proc *peek_proc_list(struct proc_node *list) {
+    if (list == 0) {
         panic("Empty proc list while peeking\n");
     } else {
-        return (*list)->data;
+        return list->data;
     }
 }
 
