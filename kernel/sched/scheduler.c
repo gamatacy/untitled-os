@@ -8,8 +8,8 @@
 
 
 void thread_scheduler(){
-    struct looped_thrlist* threadList = get_thrlist_state(RUNNABLE);
+    // struct looped_thrlist* threadList = get_thrlist_state(RUNNABLE);
 }
 void proc_scheduler(){
-    struct proc_list* procList = get_proclist_state(RUNNABLE);
+    // struct proc_list* procList = get_proclist_state(RUNNABLE);
 }

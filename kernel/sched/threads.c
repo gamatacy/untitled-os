@@ -4,6 +4,8 @@
 //
 
 #include "threads.h"
+#include "sched_states.h"
+#include "../lib/include/panic.h"
 
 struct thread *current_thread = 0;
 
@@ -35,6 +37,8 @@ void init_thread(struct thread *thread, void (*start_function)(void *), int argc
     thread->context = (struct context *) sp;
     thread->context->rdi = argc;
     thread->context->rsi = args;
+    thread->node = 0;
+    thread->proc = 0;
 }
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args) {
@@ -46,6 +50,10 @@ struct thread *create_thread(void (*start_function)(void *), int argc, struct ar
 void push_thread_list(struct thread_node **list, struct thread *thread) {
     struct thread_node *new_node = kalloc();
     new_node->data = thread;
+    if (thread->node != 0) {
+        pop_thread_list(thread->node);
+    }
+    thread->node = new_node;
     if ((*list) != 0) {
         new_node->next = (*list);
         new_node->prev = (*list)->prev;
@@ -69,7 +77,7 @@ struct thread *pop_thread_list(struct thread_node **list) {
         } else {
             (*list)->prev->next = (*list)->next;
             (*list)->next->prev = (*list)->prev;
-            kree(*list);
+            kfree(*list);
         }
         return t;
     }
@@ -83,10 +91,28 @@ void shift_thread_list(struct thread_node **list) {
     }
 }
 
-struct thread *peek_thread_list(struct thread_node **list) {
-    if (*list == 0) {
+struct thread *peek_thread_list(struct thread_node *list) {
+    printf("Peeking list %p\n", list);
+    if (list == 0) {
         panic("Empty thread list while peeking\n");
     } else {
-        return (*list)->data;
+        return list->data;
     }
+}
+
+void change_thread_state(struct thread *thread, enum sched_states state) {
+    if (thread->node == 0) {
+        panic("Thread not bound to node\n");
+    }
+
+    pop_thread_list(thread->node);
+    thread->node = 0;
+    
+    thread->state = state;
+
+    if (thread->proc == 0) {
+        panic("Thread not bound to proc\n");
+    }
+
+    push_thread_list(thread->proc->thread_states + state, thread);
 }

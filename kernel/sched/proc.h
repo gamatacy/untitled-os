@@ -14,21 +14,20 @@
 #include "../sync/spinlock.h"
 #include "../../kernel/kalloc/kalloc.h"
 #include "threads.h"
+#include "sched_states.h"
 
 typedef size_t pid_t;
 
 struct proc {
     pid_t pid;
     int killed;
-    int xstate;
-    uint64_t kstack;
-    struct looped_thrlist *thread_states[NUMBER_OF_SCHED_STATES];
+    struct thread_node *thread_states[NUMBER_OF_SCHED_STATES];
 };
 
 struct cpu {
     int ncli;                    // Depth of pushcli nesting.
     int intena;                  // Were interrupts enabled before pushcli?
-    struct thread* thread;           // The thread running on this cpu or null
+    struct current_proc *proc;   // The process running on this cpu or null
 };
 
 struct proc_node {
@@ -37,45 +36,20 @@ struct proc_node {
     struct proc_node *prev;
 };
 
-struct proc_list {
-    struct proc_node *head;
-    struct proc_node *tail;
-};
-
 extern struct cpu current_cpu;
 
-struct proc_list *get_proclist_state(enum sched_states state);
+void push_proc_list(struct proc_node **list, struct proc *proc);
 
-void init_proc_list(struct proc_list *list);
+struct proc *pop_proc_list(struct proc_node **list);
 
-void push_back_proc_list(struct proc_list *list, struct proc *proc);
+void shift_proc_list(struct proc_node **list);
 
-void push_front_proc_list(struct proc_list *list, struct proc *proc);
+struct proc *peek_proc_list(struct proc_node **list);
 
-struct proc *pop_front_proc_list(struct proc_list *list);
-
-struct proc *pop_back_proc_list(struct proc_list *list);
-
-void procinit(void);
-
-void set_proc_state(struct proc *const, enum sched_states);
-
-void passive_sleep();
-
-int exit_proc(int status);
-
-pid_t get_pid();
+struct proc_node *procinit(void);
 
 int exec(char *file, char *argv[]);
 
 char *sbrk(int n);
-
-void panic(char *message);
-
-struct proc init_first_proc();
-
-struct proc fork();
-
-struct proc forkexec();
 
 #endif //UNTITLED_OS_PROC_H

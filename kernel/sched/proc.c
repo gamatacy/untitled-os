@@ -5,198 +5,113 @@
 
 
 #include "proc.h"
+#include "../lib/include/panic.h"
+#include "sched_states.h"
 
 struct cpu current_cpu;
-struct proc head;
-struct proc *current_proc;
-//pid_t current_pid = 1;
 struct spinlock pid_lock;
 struct spinlock proc_lock;
-
-struct proc_list *proc_states[NUMBER_OF_SCHED_STATES];
-
-
-void init_proc_states() {
-    for (int i = 0; i < NUMBER_OF_SCHED_STATES; ++i) {
-        init_proc_list(proc_states[i]);
-    }
-}
-
-struct proc_list *get_proclist_state(enum sched_states state) {
-    return proc_states[state];
-}
-
-
-void procinit(void) {
-    init_proc_states();
-    head.pid = -1;
-    head.state = UNUSED;
-    head.next = &head;
-    head.prev = &head;
-    init_spinlock(&pid_lock, "pid_lock");
-    init_spinlock(&proc_lock, "proc_lock");
-}
+struct proc_node *proc_list;
 
 pid_t generate_pid() {
-    acquire_spinlock(&pid_lock);
-    static pid_t current_pid = 1;
+    //acquire(&pid_lock);
+    static pid_t current_pid = 0;
     int local_pid = current_pid;
     current_pid++;
-    release_spinlock(&pid_lock);
+    //release(&pid_lock);
     return local_pid;
 }
 
 struct proc *allocproc(void) {
-    struct proc *proc;
-    proc = kalloc();
-    proc->state = NEW;
-    acquire_spinlock(&proc_lock);
-    proc->prev = &head;
-    proc->next = head.next;
-    head.next->prev = proc;
-    head.next = proc;
-    release_spinlock(&proc_lock);
-    proc->pid = generate_pid();
-    proc->kstack = (uint64_t)
-    kalloc();
-}
+    struct proc *proc = kalloc();
 
-
-void set_proc_state(struct proc *const proc, enum sched_states state) {
-    //todo удалить нужный proc из списка
-    proc->state = state;
-    push_back_proc_list(proc_states[state], proc);
-}
-
-//
-//void passive_sleep() {
-//
-//}
-//
-int exit_proc(int status) {
-    set_proc_state(current_proc, EXIT);
-    //scheduler();
-    return 0;
-}
-
-//
-//pid_t get_pid() {
-//    return current_proc->pid;
-//}
-//
-//int exec(char *file, char *argv[]);
-//
-////Grow process’s memory by n bytes. Returns start of new memory
-//char *sbrk(int n);
-//
-//struct proc init_first_proc() {
-//    struct proc init_proc;
-//    init_proc.parent = 0;
-//    init_proc.pid = generate_pid();
-//    set_proc_state(&init_proc, RUNNABLE);
-//};
-//
-//struct proc fork() {
-//    struct proc child_proc;
-//    child_proc.pid = generate_pid();
-//    child_proc.parent = current_proc;
-//    set_proc_state(&child_proc, RUNNABLE);
-//};
-//
-void panic(char *message) {
-    print(message);
-    print("\tpanic!");
-    while (1) {}
-}
-
-struct proc forkexec();
-
-
-void init_proc_list(struct proc_list *list) {
-    if (list == 0) {
-        list = kalloc();
-        list->head = 0;
-        list->tail = 0;
-    } else {
-        //todo очистить список, если уже существует
-        list->head = 0;
-        list->tail = 0;
+    if (proc == 0) {
+        panic("Failed to alloc proc\n");
     }
+
+    pid_t pid = generate_pid();
+    
+    for (int i = 0; i < NUMBER_OF_SCHED_STATES; i++) {
+        proc->thread_states[i] = 0;
+    }
+    proc->killed = 0;
+     
+
+    //acquire(&proc_lock);
+    push_proc_list(&proc_list, proc);
+    //release(&proc_lock);
+
+    return proc;
 }
 
-void push_back_proc_list(struct proc_list *list, struct proc *proc) {
+struct proc_node *procinit(void) {
+    //initlock(&pid_lock, "pid_lock");
+    //initlock(&proc_lock, "proc_lock");
+    
+    struct proc *init_proc = allocproc();
+    printf("Init proc allocated\n");
+
+    static uint32_t arg_value = 52;
+    static struct argument arg;
+    arg.arg_size = sizeof(uint32_t);
+    arg.value = &arg_value;
+    printf("arg initialized\n");
+    struct thread *new_thread = create_thread(thread_function, 1, &arg);
+    printf("thread initialized\n");
+    new_thread->state = RUNNABLE;
+    new_thread->proc = init_proc;
+    printf("thread state initialized\n");
+    push_thread_list(init_proc->thread_states + RUNNABLE, new_thread);
+    printf("thread pushed into list\n");
+
+    return proc_list;
+}
+
+void push_proc_list(struct proc_node **list, struct proc *proc) {
     struct proc_node *new_node = kalloc();
     new_node->data = proc;
-    new_node->next = 0;
-    if (list->tail != 0) {
-        new_node->prev = list->tail;
-        list->tail->next = new_node;
+    if ((*list) != 0) {
+        new_node->next = (*list);
+        new_node->prev = (*list)->prev;
+        (*list)->prev->next = new_node;
+        (*list)->prev = new_node;
     } else {
-        if (list->head != 0) {
-            panic("unexpected error. Head of proc list can't be null");
+        new_node->prev = new_node;
+        new_node->next = new_node;
+        *list = new_node;
+    }
+}
+
+struct proc *pop_proc_list(struct proc_node **list) {
+    if (*list == 0) {
+        panic("Empty proc list while popping\n");
+    } else {
+        struct proc* p = (*list)->data;
+        if ((*list)->next = (*list)) {
+            kfree(*list);
+            *list = 0;
+        } else {
+            (*list)->prev->next = (*list)->next;
+            (*list)->next->prev = (*list)->prev;
+            kfree(*list);
         }
-        new_node->prev = 0;
-        list->head = new_node;
+        return p;
     }
-    list->tail = new_node;
 }
 
-void push_front_proc_list(struct proc_list *list, struct proc *proc) {
-    struct proc_node *new_node = kalloc();
-    new_node->data = proc;
-    new_node->prev = 0;
-    if (list->head != 0) {
-        new_node->next = list->head;
-        list->head->prev = new_node;
+void shift_proc_list(struct proc_node **list) {
+    if (*list == 0) {
+        panic("Empty proc list while shifting\n");
     } else {
-        if (list->tail != 0) {
-            panic("unexpected error. Tail of proc list can't be null");
-        }
-        new_node->next = 0;
-        list->tail = new_node;
+        *list = (*list)->next;
     }
-    list->head = new_node;
 }
 
-struct proc *pop_front_proc_list(struct proc_list *list) {
-    struct proc *pop_proc;
-    struct proc_node *pop_node;
-    if (list->head == 0) {
-        panic("Pop from empty proc list");
-    }
-    if (list->tail == 0) {
-        panic("unexpected error. Tail of proc list can't be null(pop_front_proc_list)");
-    }
-    pop_node = list->head;
-    pop_proc = pop_node->data;
-    if (list->head == list->tail) {
-        list->head = list->tail = 0;
+struct proc *peek_proc_list(struct proc_node **list) {
+    if (*list == 0) {
+        panic("Empty proc list while peeking\n");
     } else {
-        list->head = list->head->next;
-        list->head->prev = 0;
+        return (*list)->data;
     }
-    kfree(pop_node);
-    return pop_proc;
-}
-
-struct proc *pop_back_proc_list(struct proc_list *list) {
-    struct proc *pop_proc;
-    struct proc_node *pop_node;
-    if (list->head == 0) {
-        panic("Pop from empty proc list");
-    }
-    if (list->tail == 0) {
-        panic("unexpected error. Tail of proc list can't be null(pop_back_proc_list)");
-    }
-    pop_node = list->tail;
-    pop_proc = pop_node->data;
-    if (list->head == list->tail) {
-        list->head = list->tail = 0;
-    } else {
-        list->tail = list->tail->prev;
-        list->tail->next = 0;
-    }
-    kfree(pop_node);
-    return pop_proc;
 }
 
