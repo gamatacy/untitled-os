@@ -13,7 +13,8 @@
 #include <inttypes.h>
 #include "../lib/include/memset.h"
 #include "sched_states.h"
-
+#include "../lib/include/panic.h"
+#include "../pit/pit.h"
 struct argument {
     char *value;
     size_t arg_size;

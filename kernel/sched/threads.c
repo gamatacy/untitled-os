@@ -4,8 +4,7 @@
 //
 
 #include "threads.h"
-#include "sched_states.h"
-#include "../lib/include/panic.h"
+
 
 struct thread *current_thread = 0;
 
@@ -16,7 +15,11 @@ void thread_function(int argc, struct argument *args) {
 
 void print_num(uint32_t num) {
     printf("Thread started with arg %d\n", num);
-    while (1) {}
+    send_values_to_sched();
+    stop_timer();
+    while (1) {
+
+    }
 }
 
 void init_thread(struct thread *thread, void (*start_function)(void *), int argc, struct argument *args) {
