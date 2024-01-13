@@ -15,7 +15,7 @@ struct mutex {
     struct thread_node *thread_list;
 };
 
-void init_mutex(struct mutex *lock, char *name);
+int init_mutex(struct mutex *lk, char *name);
 
 void acquire_mutex(struct mutex *lk);
 

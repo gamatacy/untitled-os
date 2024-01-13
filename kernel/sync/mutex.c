@@ -7,7 +7,7 @@
 
 int init_mutex(struct mutex *lk, char *name) {
     lk->spinlock = kalloc();
-    lk->thread_node = 0;
+    lk->thread_list = 0;
     init_spinlock(lk->spinlock, name);
 }
 
@@ -21,9 +21,9 @@ void acquire_mutex(struct mutex *lk) {
         acquire_spinlock(lk->spinlock);
         return;
     } else {
-        push_thread_list(&lk->thread_list, current_cpu.thread);
-        change_thread_state(current_cpu.thread, WAIT);
-        //scheduler
+        push_thread_list(&lk->thread_list, current_cpu.current_thread);
+        change_thread_state(current_cpu.current_thread, WAIT);
+        //todo scheduler
         goto check_mutex;
     }
 };
@@ -38,7 +38,7 @@ void release_mutex(struct mutex *lk) {
     } else {
         struct thread *thread = pop_thread_list(&lk->thread_list);
         change_thread_state(thread, RUNNABLE);
-        //scheduler
+        //todo scheduler
     }
 }
 
