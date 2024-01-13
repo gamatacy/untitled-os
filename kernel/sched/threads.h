@@ -29,7 +29,6 @@ struct argument {
 };
 
 struct thread {
-  //  struct thr_node *item;
     struct context *context;
     void (*start_function)(void *);
     uint64_t stack;
@@ -39,36 +38,22 @@ struct thread {
     enum sched_states state;
 };
 
-struct thr_node {
+struct thread_node {
     struct thread *data;
-    struct thr_node *next;
-    struct thr_node *prev;
+    struct thread_node *next;
+    struct thread_node *prev;
 };
 
-struct looped_thrlist {
-    struct thr_node *head;
-    struct thr_node *tail;
-};
+void push_thread_list(struct thread_node **list, struct thread *thread);
 
-void init_thread_states();
+struct thread *pop_thread_list(struct thread_node **list);
 
+void shift_thread_list(struct thread_node **list);
 
-void init_thread_list(struct looped_thrlist **list);
-
-struct looped_thrlist** get_thrlist_state(enum sched_states state);
-
-void push_back_thread_list(struct looped_thrlist **list, struct thread *thread);
-
-void push_front_thread_list(struct looped_thrlist **list, struct thread *thread);
-
-struct thread *pop_front_thread_list(struct looped_thrlist **list);
-
-struct thread *pop_back_thread_list(struct looped_thrlist **list);
+struct thread *peek_thread_list(struct thread_node **list);
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 
 void thread_function(int argc, struct argument *args);
-
-void set_thread_state(struct thread *const, enum sched_states);
 
 #endif //UNTITLED_OS_THREADS_H

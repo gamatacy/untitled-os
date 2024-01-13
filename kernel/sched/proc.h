@@ -19,12 +19,10 @@ typedef size_t pid_t;
 
 struct proc {
     pid_t pid;
-    enum sched_states state;
     int killed;
     int xstate;
     uint64_t kstack;
-    struct proc *prev;
-    struct proc *next;
+    struct looped_thrlist *thread_states[NUMBER_OF_SCHED_STATES];
 };
 
 struct cpu {

@@ -55,7 +55,6 @@ int kernel_main(){
     push_back_thread_list(local, new_thread);
     print("lol");
     pop_back_thread_list(local);
-    while (1){}
     switch_context(&kernel_context_ptr, new_thread->context);
     while(1) {};
     return 0;
