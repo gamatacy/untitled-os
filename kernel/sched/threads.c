@@ -37,8 +37,6 @@ void init_thread(struct thread *thread, void (*start_function)(void *), int argc
     thread->context = (struct context *) sp;
     thread->context->rdi = argc;
     thread->context->rsi = args;
-    thread->node = 0;
-    thread->proc = 0;
 }
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args) {
@@ -50,10 +48,6 @@ struct thread *create_thread(void (*start_function)(void *), int argc, struct ar
 void push_thread_list(struct thread_node **list, struct thread *thread) {
     struct thread_node *new_node = kalloc();
     new_node->data = thread;
-    if (thread->node != 0) {
-        pop_thread_list(thread->node);
-    }
-    thread->node = new_node;
     if ((*list) != 0) {
         new_node->next = (*list);
         new_node->prev = (*list)->prev;
@@ -100,19 +94,6 @@ struct thread *peek_thread_list(struct thread_node *list) {
     }
 }
 
-void change_thread_state(struct thread *thread, enum sched_states state) {
-    if (thread->node == 0) {
-        panic("Thread not bound to node\n");
-    }
-
-    pop_thread_list(thread->node);
-    thread->node = 0;
-    
-    thread->state = state;
-
-    if (thread->proc == 0) {
-        panic("Thread not bound to proc\n");
-    }
-
-    push_thread_list(thread->proc->thread_states + state, thread);
+void change_thread_state(struct thread *thread, enum sched_states new_state) {
+    thread->state = new_state;
 }

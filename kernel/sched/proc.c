@@ -31,11 +31,8 @@ struct proc *allocproc(void) {
 
     pid_t pid = generate_pid();
     
-    for (int i = 0; i < NUMBER_OF_SCHED_STATES; i++) {
-        proc->thread_states[i] = 0;
-    }
+    proc->threads = 0;
     proc->killed = 0;
-     
 
     //acquire(&proc_lock);
     push_proc_list(&proc_list, proc);
@@ -58,10 +55,9 @@ struct proc_node *procinit(void) {
     printf("arg initialized\n");
     struct thread *new_thread = create_thread(thread_function, 1, &arg);
     printf("thread initialized\n");
-    new_thread->state = RUNNABLE;
-    new_thread->proc = init_proc;
+    change_thread_state(new_thread, RUNNABLE);
     printf("thread state initialized\n");
-    push_thread_list(init_proc->thread_states + RUNNABLE, new_thread);
+    push_thread_list(&(init_proc->threads), new_thread);
     printf("thread pushed into list\n");
 
     return proc_list;
