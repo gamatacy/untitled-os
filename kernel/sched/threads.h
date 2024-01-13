@@ -64,7 +64,7 @@ struct thread *pop_back_thread_list(struct looped_thrlist *list);
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 
-void thread_function(uint32_t);
+void thread_function(int argc, struct argument *args);
 
 void set_thread_state(struct thread *const, enum sched_states);
 

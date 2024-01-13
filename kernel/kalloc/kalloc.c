@@ -17,7 +17,7 @@ struct {
 
 
 void kinit(uint64_t start, uint64_t stop) {
-     initlock(&kmem.lock, "kmem");
+    //  initlock(&kmem.lock, "kmem");
     char *p;
     p = (char *) PGROUNDUP(start);
     for (; p + PGSIZE < stop; p += PGSIZE)
@@ -38,20 +38,20 @@ void kfree(void *pa) {
 
     r = (struct run *) pa;
 
-   acquire(&kmem.lock);
+//    acquire(&kmem.lock);
     r->next = kmem.freelist;
     kmem.freelist = r;
-   release(&kmem.lock);
+//    release(&kmem.lock);
 }
 
 void *kalloc() {
     struct run *r;
 
-   acquire(&kmem.lock);
+//    acquire(&kmem.lock);
     r = kmem.freelist;
     if (r)
         kmem.freelist = r->next;
-   release(&kmem.lock);
+//    release(&kmem.lock);
 
     if (r)
         memset((char *) r, 5, PGSIZE); // fill with junk

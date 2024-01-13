@@ -9,12 +9,14 @@ struct looped_thrlist *thread_states[NUMBER_OF_SCHED_STATES];
 
 struct thread *current_thread = 0;
 
-void thread_function(uint32_t num) {
+void thread_function(int argc, struct argument *args) {
+    uint32_t num = *((uint32_t*) args[0].value);
+    print_num(num);
+}
+
+void print_num(uint32_t num) {
     printf("Thread started with arg %d\n", num);
-    while (1) {
-//        printf("Thread is running\n");
-//        yield();
-    }
+    while (1) {}
 }
 
 void init_thread_states() {
@@ -38,17 +40,13 @@ void init_thread(struct thread *thread, void (*start_function)(void *), int argc
     thread->argc = argc;
     thread->args = args;
     char *sp = thread->stack;
-    for (int i = argc - 1; i >= 0; i--) {
-        for (int j = args[i].arg_size - 1; j >= 0; j--) {
-            *(--sp) = args->value[j];
-        }
-    }
-
-    sp -= sizeof(uint64_t);
+    sp -= sizeof(uint64_t);     
     *(uint64_t * )(sp) = start_function;
     sp -= sizeof(struct context) - sizeof(uint64_t);
     memset(sp, 0, sizeof(struct context) - sizeof(uint64_t));
     thread->context = (struct context *) sp;
+    thread->context->rdi = argc;
+    thread->context->rsi = args;
 }
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args) {

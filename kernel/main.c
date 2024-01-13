@@ -39,7 +39,7 @@ int kernel_main(){
 
     uint32_t arg_value = 52;
     struct argument arg;
-    arg.arg_size = 4;
+    arg.arg_size = sizeof(uint32_t);
     arg.value = &arg_value;
     struct thread *new_thread = create_thread(thread_function, 1, &arg);
     struct context kernel_context;
