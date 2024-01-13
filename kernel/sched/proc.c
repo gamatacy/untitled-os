@@ -33,16 +33,16 @@ void procinit(void) {
     head.state = UNUSED;
     head.next = &head;
     head.prev = &head;
-    initlock(&pid_lock, "pid_lock");
-    initlock(&proc_lock, "proc_lock");
+    init_spinlock(&pid_lock, "pid_lock");
+    init_spinlock(&proc_lock, "proc_lock");
 }
 
 pid_t generate_pid() {
-    acquire(&pid_lock);
+    acquire_spinlock(&pid_lock);
     static pid_t current_pid = 1;
     int local_pid = current_pid;
     current_pid++;
-    release(&pid_lock);
+    release_spinlock(&pid_lock);
     return local_pid;
 }
 
@@ -50,12 +50,12 @@ struct proc *allocproc(void) {
     struct proc *proc;
     proc = kalloc();
     proc->state = NEW;
-    acquire(&proc_lock);
+    acquire_spinlock(&proc_lock);
     proc->prev = &head;
     proc->next = head.next;
     head.next->prev = proc;
     head.next = proc;
-    release(&proc_lock);
+    release_spinlock(&proc_lock);
     proc->pid = generate_pid();
     proc->kstack = (uint64_t)
     kalloc();

@@ -7,15 +7,15 @@
 // Eflags register
 #define FL_INT           0x00000200      // Interrupt Enable
 
-void initlock(struct spinlock *lock, char *name) {
+void init_spinlock(struct spinlock *lock, char *name) {
     lock->is_locked = 0;
     lock->name = name;
 }
 
 //bool function
-uint8_t acquire(struct spinlock *lk) {
+uint8_t acquire_spinlock(struct spinlock *lk) {
     pushcli(); // disable interrupts to avoid deadlock.
-    if (holding(lk))
+    if (holding_spinlock(lk))
         return 1;
 
     // The xchg is atomic.
@@ -23,23 +23,23 @@ uint8_t acquire(struct spinlock *lk) {
 
     // Tell the C compiler and the processor to not move loads or stores
     // past this point, to ensure that the critical section's memory
-    // references happen after the lock is acquired.
+    // references happen after the lock is acquire_spinlockd.
     __sync_synchronize();
     return 0;
 }
 
-void release(struct spinlock *lk) {
-    if (!holding(lk))
-        panic("release");
+void release_spinlock(struct spinlock *lk) {
+    if (!holding_spinlock(lk))
+        panic("release_spinlock");
 
     // Tell the C compiler and the processor to not move loads or stores
     // past this point, to ensure that all the stores in the critical
-    // section are visible to other cores before the lock is released.
+    // section are visible to other cores before the lock is release_spinlockd.
     // Both the C compiler and the hardware may re-order loads and
     // stores; __sync_synchronize() tells them both not to.
     __sync_synchronize();
 
-    // Release the lock, equivalent to lk->locked = 0.
+    // release_spinlock the lock, equivalent to lk->locked = 0.
     // This code can't use a C assignment, since it might
     // not be atomic. A real OS would use C atomics here.
     asm volatile("movl $0, %0" : "+m" (lk->is_locked) : );
@@ -47,7 +47,7 @@ void release(struct spinlock *lk) {
     popcli();
 }
 
-int holding(struct spinlock *lock) {
+int holding_spinlock(struct spinlock *lock) {
     int r;
     pushcli();
     r = lock->is_locked;
