@@ -53,17 +53,17 @@ struct looped_thrlist {
 void init_thread_states();
 
 
-void init_thread_list(struct looped_thrlist *list);
+void init_thread_list(struct looped_thrlist **list);
 
-struct looped_thrlist* get_thrlist_state(enum sched_states state);
+struct looped_thrlist** get_thrlist_state(enum sched_states state);
 
-void push_back_thread_list(struct looped_thrlist *list, struct thread *thread);
+void push_back_thread_list(struct looped_thrlist **list, struct thread *thread);
 
-void push_front_thread_list(struct looped_thrlist *list, struct thread *thread);
+void push_front_thread_list(struct looped_thrlist **list, struct thread *thread);
 
-struct thread *pop_front_thread_list(struct looped_thrlist *list);
+struct thread *pop_front_thread_list(struct looped_thrlist **list);
 
-struct thread *pop_back_thread_list(struct looped_thrlist *list);
+struct thread *pop_back_thread_list(struct looped_thrlist **list);
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 

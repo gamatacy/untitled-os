@@ -20,17 +20,17 @@ void print_num(uint32_t num) {
 }
 
 
-void init_thread_list(struct looped_thrlist *list) {
-    if (list == 0) {
-        list = kalloc();
-        list->head = 0;
-        list->tail = 0;
+void init_thread_list(struct looped_thrlist **list) {
+    if (((*list)) == 0) {
+        (*list) = kalloc();
+        (*list)->head = 0;
+        (*list)->tail = 0;
     } else {
-        while (list->head != 0) {
-            pop_back_thread_list(list);
+        while ((*list)->head != 0) {
+            pop_back_thread_list(*list);
         }
-        list->head = 0;
-        list->tail = 0;
+        (*list)->head = 0;
+        (*list)->tail = 0;
     }
 }
 
@@ -40,8 +40,8 @@ void init_thread_states() {
     }
 }
 
-struct looped_thrlist *get_thrlist_state(enum sched_states state) {
-    return thread_states[state];
+struct looped_thrlist **get_thrlist_state(enum sched_states state) {
+    return &thread_states[state];
 }
 
 void init_thread(struct thread *thread, void (*start_function)(void *), int argc, struct argument *args) {
@@ -78,78 +78,78 @@ void set_thread_state(struct thread *const thread, enum sched_states state) {
 
 
 
-void push_back_thread_list(struct looped_thrlist *list, struct thread *thread) {
+void push_back_thread_list(struct looped_thrlist **list, struct thread *thread) {
     struct thr_node *new_node = kalloc();
     new_node->data = thread;
-    new_node->next = list->head;
-    if (list->tail != 0) {
-        list->head->prev = new_node;
-        list->tail->next = new_node;
-        new_node->prev = list->tail;
+    new_node->next = (*list)->head;
+    if ((*list)->tail != 0) {
+        (*list)->head->prev = new_node;
+        (*list)->tail->next = new_node;
+        new_node->prev = (*list)->tail;
     } else {
-        if (list->head != 0) {
+        if ((*list)->head != 0) {
             panic("unexpected error. Head of thread list can't be null");
         }
-        new_node->prev = list->head;
-        list->head = new_node;
+        new_node->prev = (*list)->head;
+        (*list)->head = new_node;
     }
-    list->tail = new_node;
+    (*list)->tail = new_node;
 }
 
-void push_front_thread_list(struct looped_thrlist *list, struct thread *thread) {
+void push_front_thread_list(struct looped_thrlist **list, struct thread *thread) {
     struct thr_node *new_node = kalloc();
     new_node->data = thread;
-    new_node->prev = list->tail;
-    if (list->head != 0) {
-        new_node->next = list->head;
-        list->head->prev = new_node;
+    new_node->prev = (*list)->tail;
+    if ((*list)->head != 0) {
+        new_node->next = (*list)->head;
+        (*list)->head->prev = new_node;
     } else {
-        if (list->tail != 0) {
+        if ((*list)->tail != 0) {
             panic("unexpected error. Tail of thread list can't be null");
         }
         new_node->next = 0;
-        list->tail = new_node;
+        (*list)->tail = new_node;
     }
-    list->head = new_node;
+    (*list)->head = new_node;
 }
 
-struct thread *pop_front_thread_list(struct looped_thrlist *list) {
+struct thread *pop_front_thread_list(struct looped_thrlist **list) {
     struct thread *pop_thread;
     struct thr_node *pop_node;
-    if (list->head == 0) {
+    if ((*list)->head == 0) {
         panic("Pop from empty thread list");
     }
-    if (list->tail == 0) {
+    if ((*list)->tail == 0) {
         panic("unexpected error. Tail of thread list can't be null(pop_front_thread_list)");
     }
-    pop_node = list->head;
+    pop_node = (*list)->head;
     pop_thread = pop_node->data;
-    if (list->head == list->tail) {
-        list->head = list->tail = 0;
+    if ((*list)->head == (*list)->tail) {
+        (*list)->head = (*list)->tail = 0;
     } else {
-        list->head = list->head->next;
-        list->head->prev = 0;
+        (*list)->head = (*list)->head->next;
+        (*list)->head->prev = 0;
     }
     kfree(pop_node);
     return pop_thread;
 }
 
-struct thread *pop_back_thread_list(struct looped_thrlist *list) {
+struct thread *pop_back_thread_list(struct looped_thrlist **list) {
     struct thread *pop_thread;
     struct thr_node *pop_node;
-    if (list->head == 0) {
+    if ((*list)->head == 0) {
         panic("Pop from empty thread list");
     }
-    if (list->tail == 0) {
+    if ((*list)->tail == 0) {
         panic("unexpected error. Tail of thread list can't be null(pop_back_thread_list)");
     }
-    pop_node = list->tail;
+    pop_node = (*list)->tail;
     pop_thread = pop_node->data;
-    if (list->head == list->tail) {
-        list->head = list->tail = 0;
+    if ((*list)->head == (*list)->tail) {
+        (*list)->head = (*list)->tail = 0;
     } else {
-        list->tail = list->tail->prev;
-        list->tail->next = 0;
+        (*list)->tail = (*list)->tail->prev;
+        (*list)->tail->next = 0;
     }
     kfree(pop_node);
     return pop_thread;

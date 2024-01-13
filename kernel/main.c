@@ -51,7 +51,7 @@ int kernel_main(){
     printf("New thread return RIP: %p\n", *(uint64_t*)(new_thread->context + 1));
     printf("Thread function address: %p\n", thread_function);
 
-    struct looped_thrlist* local = get_thrlist_state(RUNNABLE);
+    struct looped_thrlist** local = get_thrlist_state(RUNNABLE);
     push_back_thread_list(local, new_thread);
     print("lol");
     pop_back_thread_list(local);
