@@ -6,8 +6,11 @@
 #include "scheduler.h"
 #include "proc.h"
 #include "threads.h"
+#include "../lib/include/x86_64.h"
 #include "../lib/include/panic.h"
 
+struct context kcontext;
+struct context *kcontext_ptr = &kcontext;
 uint32_t current_proc_rounds = 0;
 
 struct thread *get_next_thread() {
@@ -42,4 +45,16 @@ struct thread *get_next_thread() {
     } while (peek_proc_list(proc_list) != first_proc);
 
     panic("shcedule: no available threads\n");
+}
+
+void scheduler() {
+    while (1) {
+        struct thread *next_thread = get_next_thread();
+        current_cpu.current_thread = next_thread;
+        switch_context(&kcontext_ptr, next_thread->context);
+    }
+}
+
+void yield() {
+    switch_context(&(current_cpu.current_thread->context), kcontext_ptr);
 }
