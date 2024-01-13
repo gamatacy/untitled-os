@@ -14,11 +14,11 @@ struct spinlock proc_lock;
 struct proc_node *proc_list;
 
 pid_t generate_pid() {
-    acquire(&pid_lock);
+    //acquire(&pid_lock);
     static pid_t current_pid = 0;
     int local_pid = current_pid;
     current_pid++;
-    release(&pid_lock);
+    //release(&pid_lock);
     return local_pid;
 }
 
@@ -37,28 +37,34 @@ struct proc *allocproc(void) {
     proc->killed = 0;
      
 
-    acquire(&proc_lock);
+    //acquire(&proc_lock);
     push_proc_list(&proc_list, proc);
-    release(&proc_lock);
+    //release(&proc_lock);
 
     return proc;
 }
 
 struct proc_node *procinit(void) {
-    initlock(&pid_lock, "pid_lock");
-    initlock(&proc_lock, "proc_lock");
+    //initlock(&pid_lock, "pid_lock");
+    //initlock(&proc_lock, "proc_lock");
     
     struct proc *init_proc = allocproc();
-    
+    printf("Init proc allocated\n");
+
     static uint32_t arg_value = 52;
     static struct argument arg;
     arg.arg_size = sizeof(uint32_t);
     arg.value = &arg_value;
+    printf("arg initialized\n");
     struct thread *new_thread = create_thread(thread_function, 1, &arg);
+    printf("thread initialized\n");
     new_thread->state = RUNNABLE;
     new_thread->proc = init_proc;
-
+    printf("thread state initialized\n");
     push_thread_list(init_proc->thread_states + RUNNABLE, new_thread);
+    printf("thread pushed into list\n");
+
+    return proc_list;
 }
 
 void push_proc_list(struct proc_node **list, struct proc *proc) {

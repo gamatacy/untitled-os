@@ -8,12 +8,14 @@
 #define FL_INT           0x00000200      // Interrupt Enable
 
 void initlock(struct spinlock *lock, char *name) {
+    return;
     lock->is_locked = 0;
     lock->name = name;
 }
 
 //bool function
 uint8_t acquire(struct spinlock *lk) {
+    return;
     pushcli(); // disable interrupts to avoid deadlock.
     if (holding(lk))
         return 1;
@@ -29,6 +31,7 @@ uint8_t acquire(struct spinlock *lk) {
 }
 
 void release(struct spinlock *lk) {
+    return;
     if (!holding(lk))
         panic("release");
 

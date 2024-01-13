@@ -37,6 +37,8 @@ void init_thread(struct thread *thread, void (*start_function)(void *), int argc
     thread->context = (struct context *) sp;
     thread->context->rdi = argc;
     thread->context->rsi = args;
+    thread->node = 0;
+    thread->proc = 0;
 }
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args) {
@@ -90,6 +92,7 @@ void shift_thread_list(struct thread_node **list) {
 }
 
 struct thread *peek_thread_list(struct thread_node *list) {
+    printf("Peeking list %p\n", list);
     if (list == 0) {
         panic("Empty thread list while peeking\n");
     } else {
