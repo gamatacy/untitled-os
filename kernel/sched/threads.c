@@ -19,6 +19,21 @@ void print_num(uint32_t num) {
     while (1) {}
 }
 
+
+void init_thread_list(struct looped_thrlist *list) {
+    if (list == 0) {
+        list = kalloc();
+        list->head = 0;
+        list->tail = 0;
+    } else {
+        while (list->head != 0) {
+            pop_back_thread_list(list);
+        }
+        list->head = 0;
+        list->tail = 0;
+    }
+}
+
 void init_thread_states() {
     for (int i = 0; i < NUMBER_OF_SCHED_STATES; ++i) {
         init_thread_list(thread_states[i]);
@@ -61,19 +76,7 @@ void set_thread_state(struct thread *const thread, enum sched_states state) {
     push_back_thread_list(thread_states[state], thread);
 }
 
-void init_thread_list(struct looped_thrlist *list) {
-    if (list == 0) {
-        list = kalloc();
-        list->head = 0;
-        list->tail = 0;
-    } else {
-        while (list->head != 0) {
-            pop_back_thread_list(list);
-        }
-        list->head = 0;
-        list->tail = 0;
-    }
-}
+
 
 void push_back_thread_list(struct looped_thrlist *list, struct thread *thread) {
     struct thr_node *new_node = kalloc();

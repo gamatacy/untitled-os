@@ -50,6 +50,9 @@ struct looped_thrlist {
     struct thr_node *tail;
 };
 
+void init_thread_states();
+
+
 void init_thread_list(struct looped_thrlist *list);
 
 struct looped_thrlist* get_thrlist_state(enum sched_states state);
