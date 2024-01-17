@@ -48,16 +48,23 @@ struct proc_node *procinit(void) {
     struct proc *init_proc = allocproc();
     printf("Init proc allocated\n");
 
-    static uint32_t arg_value = 52;
-    static struct argument arg;
-    arg.arg_size = sizeof(uint32_t);
-    arg.value = &arg_value;
+    static uint32_t arg_value1 = 1;
+    static uint32_t arg_value2 = 2;
+    static struct argument arg1;
+    static struct argument arg2;
+    arg1.arg_size = sizeof(uint32_t);
+    arg1.value = &arg_value1;
+    arg2.arg_size = sizeof(uint32_t);
+    arg2.value = &arg_value2;
     printf("arg initialized\n");
-    struct thread *new_thread = create_thread(thread_function, 1, &arg);
+    struct thread *new_thread1 = create_thread(thread_function, 1, &arg1);
+    struct thread *new_thread2 = create_thread(thread_function, 1, &arg2);
     printf("thread initialized\n");
-    change_thread_state(new_thread, RUNNABLE);
+    change_thread_state(new_thread1, RUNNABLE);
+    change_thread_state(new_thread2, RUNNABLE);
     printf("thread state initialized\n");
-    push_thread_list(&(init_proc->threads), new_thread);
+    push_thread_list(&(init_proc->threads), new_thread1);
+    push_thread_list(&(init_proc->threads), new_thread2);
     printf("thread pushed into list\n");
 
     return proc_list;

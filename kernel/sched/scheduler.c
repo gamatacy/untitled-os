@@ -27,21 +27,21 @@ struct thread *get_next_thread() {
         current_proc = peek_proc_list(proc_list);
 
         // If proc has threads
-        if (current_proc->threads != 0) panic("schedule: proc with no threads\n");
+        if (current_proc->threads == 0) panic("schedule: proc with no threads\n");
 
         struct thread *first_thread = peek_thread_list(current_proc->threads);
         struct thread *current_thread;
 
         do {
             current_thread = peek_thread_list(current_proc->threads);
-            shift_thread_list(current_proc->threads);
+            shift_thread_list(&(current_proc->threads));
             if (current_thread->state == RUNNABLE) {
                 return current_thread;
             }
         } while (peek_thread_list(current_proc->threads) != first_thread);
 
         current_proc_rounds = 0;
-        shift_proc_list(proc_list);
+        shift_proc_list(&proc_list);
     } while (peek_proc_list(proc_list) != first_proc);
 
     panic("shcedule: no available threads\n");
@@ -49,6 +49,7 @@ struct thread *get_next_thread() {
 
 void scheduler() {
     while (1) {
+        //printf("scheduling\n");
         struct thread *next_thread = get_next_thread();
         current_cpu.current_thread = next_thread;
         switch_context(&kcontext_ptr, next_thread->context);
@@ -56,5 +57,6 @@ void scheduler() {
 }
 
 void yield() {
+    //printf("yield\n");
     switch_context(&(current_cpu.current_thread->context), kcontext_ptr);
 }

@@ -6,6 +6,7 @@
 #include "threads.h"
 #include "sched_states.h"
 #include "../lib/include/panic.h"
+#include "scheduler.h"
 
 struct thread *current_thread = 0;
 
@@ -15,8 +16,10 @@ void thread_function(int argc, struct argument *args) {
 }
 
 void print_num(uint32_t num) {
-    printf("Thread started with arg %d\n", num);
-    while (1) {}
+    while (1) {
+        printf("Hello from thread %d\n", num);
+        yield();
+    }
 }
 
 void init_thread(struct thread *thread, void (*start_function)(void *), int argc, struct argument *args) {
@@ -86,7 +89,6 @@ void shift_thread_list(struct thread_node **list) {
 }
 
 struct thread *peek_thread_list(struct thread_node *list) {
-    printf("Peeking list %p\n", list);
     if (list == 0) {
         panic("Empty thread list while peeking\n");
     } else {
