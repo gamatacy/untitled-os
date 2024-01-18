@@ -23,13 +23,14 @@ void acquire_mutex(struct mutex *lk) {
     } else {
         push_thread_list(&lk->thread_list, current_cpu.current_thread);
         change_thread_state(current_cpu.current_thread, WAIT);
-        //todo scheduler
+        yield();
+        if(holding_spinlock(lk->spinlock) != 0) panic("acquire_mutex: spinlock in not free");
         goto check_mutex;
     }
 };
 
 void release_mutex(struct mutex *lk) {
-    if (lk->spinlock->is_locked != 0) {
+    if (lk->spinlock->is_locked == 0) {
         panic("release_mutex");
     }
     if (lk->thread_list == 0) {
@@ -38,7 +39,6 @@ void release_mutex(struct mutex *lk) {
     } else {
         struct thread *thread = pop_thread_list(&lk->thread_list);
         change_thread_state(thread, RUNNABLE);
-        //todo scheduler
     }
 }
 

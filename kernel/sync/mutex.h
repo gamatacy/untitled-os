@@ -9,6 +9,7 @@
 #include "spinlock.h"
 #include "../sched/threads.h"
 #include "../kalloc/kalloc.h"
+#include "../sched/scheduler.h"
 
 struct mutex {
     struct spinlock *spinlock;
