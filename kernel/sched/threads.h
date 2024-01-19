@@ -12,17 +12,7 @@
 #include <stddef.h>
 #include <inttypes.h>
 #include "../lib/include/memset.h"
-#define NUMBER_OF_SCHED_STATES 7
-
-enum sched_states {
-    NEW = 0,
-    RUNNABLE,
-    ON_CPU,
-    WAIT,
-    INTERRUPTIBLE,
-    EXIT,
-    UNUSED
-};
+#include "sched_states.h"
 
 struct argument {
     char *value;
@@ -45,27 +35,18 @@ struct thread_node {
     struct thread_node *prev;
 };
 
-struct thread_list {
-    struct thread_node *head;
-    struct thread_node *tail;
-};
+void push_thread_list(struct thread_node **list, struct thread *thread);
 
-void init_thread_list(struct thread_list *list);
+struct thread *pop_thread_list(struct thread_node **list);
 
-struct thread_list* get_thrlist_state(enum sched_states state);
+void shift_thread_list(struct thread_node **list);
 
-void push_back_thread_list(struct thread_list *list, struct thread *thread);
-
-void push_front_thread_list(struct thread_list *list, struct thread *thread);
-
-struct thread *pop_front_thread_list(struct thread_list *list);
-
-struct thread *pop_back_thread_list(struct thread_list *list);
+struct thread *peek_thread_list(struct thread_node *list);
 
 struct thread *create_thread(void (*start_function)(void *), int argc, struct argument *args);
 
-void thread_function(uint32_t);
+void change_thread_state(struct thread *thread, enum sched_states new_state);
 
-void set_thread_state(struct thread *const, enum sched_states);
+void thread_function(int argc, struct argument *args);
 
 #endif //UNTITLED_OS_THREADS_H

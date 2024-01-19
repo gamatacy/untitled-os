@@ -6,7 +6,7 @@
 #define UNTITLED_OS_INTERRUPT_HANDLERS_H
 //#include "../lib/include/stdint.h"
 #include <inttypes.h>
-
+#include "../lib/include/x86_64.h"
 void keyboard_handler_wrapper();
 void keyboard_handler();
 void timer_interrupt();

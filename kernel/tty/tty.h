@@ -7,6 +7,9 @@
 #define UNTITLED_OS_TTY_H
 #include "../vga/vga.h"
 #include <inttypes.h>
+#include "../sync/spinlock.h"
+#include "../lib/include/x86_64.h"
+
 #define TERMINALS_NUMBER 7
 typedef struct {
     struct char_with_color tty_buffer[VGA_HEIGHT * VGA_WIDTH];

@@ -7,4 +7,6 @@
 #define UNTITLED_OS_MY_TYPES_H
 #include <stdint.h>
 #include <stddef.h>
+
+#define NULL 0
 #endif //UNTITLED_OS_MY_TYPES_H

@@ -16,9 +16,12 @@ struct spinlock {
     char *name;
 };
 
-void initlock(struct spinlock *lock, char *name);
-uint8_t acquire(struct spinlock *lk);
-void release(struct spinlock *lk);
-int holding(struct spinlock *lock);
+void init_spinlock(struct spinlock *lock, char *name);
+
+void acquire_spinlock(struct spinlock *lk);
+
+void release_spinlock(struct spinlock *lk);
+
+int holding_spinlock(struct spinlock *lock);
 
 #endif //UNTITLED_OS_SPINLOCK_H

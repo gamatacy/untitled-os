@@ -7,13 +7,16 @@
 #define UNTITLED_OS_MUTEX_H
 
 #include "spinlock.h"
+#include "../sched/threads.h"
+#include "../kalloc/kalloc.h"
+#include "../sched/scheduler.h"
 
 struct mutex {
-    struct spinlock spinlock;
-    struct proc_list list;
+    struct spinlock *spinlock;
+    struct thread_node *thread_list;
 };
 
-void init_mutex(struct spinlock *lock, char *name);
+int init_mutex(struct mutex *lk, char *name);
 
 void acquire_mutex(struct mutex *lk);
 

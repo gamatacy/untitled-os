@@ -7,9 +7,10 @@
 #define UNTITLED_OS_SHEDULER_H
 #include "proc.h"
 #include "threads.h"
+#define ROUNDS_PER_PROC 5
 
-void thread_scheduler();
-
-void proc_scheduler();
+struct thread *get_next_thread(void);
+void scheduler(void);
+void yield(void);
 
 #endif //UNTITLED_OS_SHEDULER_H
