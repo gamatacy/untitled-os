@@ -111,7 +111,6 @@ void print(const char *string) {
     }
     write_buffer(active_tty->tty_buffer);
     release_spinlock(&print_spinlock);
-
 }
 
 void itoa(int num, char *str, int radix) {
