@@ -25,10 +25,7 @@ typedef struct {
 } Directory;
 
 typedef struct {
-    int data_page;
-} PageTableEntry;
-
-typedef struct {
+    Directory *root_directory;
     Directory directories[MAX_DIR_COUNT];
     int dir_count;
     FileEntry files[MAX_FILE_COUNT];
@@ -36,4 +33,5 @@ typedef struct {
     PageTableEntry page_table[FILE_SYSTEM_SIZE / PGSIZE];
     char data[FILE_SYSTEM_SIZE];
 } FileSystem;
+
 #endif //UNTITLED_OS_FS_H
