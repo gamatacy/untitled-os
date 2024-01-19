@@ -13,7 +13,8 @@
 #define TERMINALS_NUMBER 7
 static tty_structure tty_terminals[TERMINALS_NUMBER];
 static tty_structure *active_tty;
-static struct spinlock tty_spinlock;
+static struct spinlock printf_spinlock;
+static struct spinlock print_spinlock;
 
 void set_fg(enum vga_colors _fg) {
     active_tty->fg = _fg;
@@ -33,7 +34,8 @@ void init_tty() {
         memset((tty_terminals + i)->tty_buffer, 0, VGA_HEIGHT * VGA_WIDTH);
     }
     set_tty(0);
-    init_spinlock(&tty_spinlock, "tty spinlock");
+    init_spinlock(&printf_spinlock, "printf spinlock");
+    init_spinlock(&print_spinlock, "print spinlock");
 };
 
 void set_tty(uint8_t terminal) {
@@ -103,14 +105,13 @@ void putchar(char *c) {
 }
 
 void print(const char *string) {
-//    static volatile uint8_t print_mutex = 0;
-//    while (print_mutex != 0) {}
-//    print_mutex = 1;
+    acquire_spinlock(&print_spinlock);
     while (*string != 0) {
         putchar(string++);
     }
     write_buffer(active_tty->tty_buffer);
-//    print_mutex = 0;
+    release_spinlock(&print_spinlock);
+
 }
 
 void itoa(int num, char *str, int radix) {
@@ -146,7 +147,7 @@ void ptoa(uint64_t num, char *str) {
 }
 
 void printf(const char *format, ...) {
-    acquire_spinlock(&tty_spinlock);
+    acquire_spinlock(&printf_spinlock);
     va_list varargs;
     va_start(varargs, format);
     char digits_buf[100];
@@ -198,6 +199,6 @@ void printf(const char *format, ...) {
         }
         format++;
     }
-    release_spinlock(&tty_spinlock);
+    release_spinlock(&printf_spinlock);
 }
 
