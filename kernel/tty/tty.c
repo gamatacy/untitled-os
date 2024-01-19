@@ -9,9 +9,11 @@
 //#include "../lib/include/stdint.h"
 #include <inttypes.h>
 #include "../lib/include/memset.h"
+
 #define TERMINALS_NUMBER 7
 static tty_structure tty_terminals[TERMINALS_NUMBER];
-static tty_structure* active_tty;
+static tty_structure *active_tty;
+static struct spinlock tty_spinlock;
 
 void set_fg(enum vga_colors _fg) {
     active_tty->fg = _fg;
@@ -21,34 +23,36 @@ void set_bg(enum vga_colors _bg) {
     active_tty->bg = _bg;
 }
 
-void init_tty(){
+void init_tty() {
     memset(&tty_terminals, 0, sizeof(tty_structure) * TERMINALS_NUMBER);
     for (int i = 0; i < TERMINALS_NUMBER; ++i) {
-        (tty_terminals+i)->tty_id = i;
-        (tty_terminals+i)->bg = DEFAULT_BG_COLOR;
-        (tty_terminals+i)->fg = DEFAULT_FG_COLOR;
-        (tty_terminals+i)->line = (tty_terminals+i)->pos = 0;
-        memset((tty_terminals+i)->tty_buffer, 0, VGA_HEIGHT * VGA_WIDTH);
+        (tty_terminals + i)->tty_id = i;
+        (tty_terminals + i)->bg = DEFAULT_BG_COLOR;
+        (tty_terminals + i)->fg = DEFAULT_FG_COLOR;
+        (tty_terminals + i)->line = (tty_terminals + i)->pos = 0;
+        memset((tty_terminals + i)->tty_buffer, 0, VGA_HEIGHT * VGA_WIDTH);
     }
     set_tty(0);
+    init_spinlock(&tty_spinlock, "tty spinlock");
 };
 
-void set_tty(uint8_t terminal){
-    if(TERMINALS_NUMBER<=terminal){
+void set_tty(uint8_t terminal) {
+    if (TERMINALS_NUMBER <= terminal) {
         return;
     }
     clear_vga();
-    active_tty = tty_terminals+terminal;
+    active_tty = tty_terminals + terminal;
     write_buffer(active_tty->tty_buffer);
 }
 
-void clear_current_tty(){
-    memset(active_tty->tty_buffer, 0, VGA_WIDTH*VGA_HEIGHT);
+void clear_current_tty() {
+    memset(active_tty->tty_buffer, 0, VGA_WIDTH * VGA_HEIGHT);
     active_tty->pos = 0;
     active_tty->line = 0;
     clear_vga();
 }
-uint8_t get_current_tty(){
+
+uint8_t get_current_tty() {
     return active_tty->tty_id;
 }
 
@@ -71,15 +75,15 @@ struct char_with_color make_char(char value, enum vga_colors fg, enum vga_colors
 }
 
 void scroll() {
-    for (int i=1; i<VGA_HEIGHT; i++) {
-        for (int j=0; j<VGA_WIDTH; j++) {
-            active_tty->tty_buffer[(i-1)*VGA_WIDTH+j] = active_tty->tty_buffer[i*VGA_WIDTH+j];
+    for (int i = 1; i < VGA_HEIGHT; i++) {
+        for (int j = 0; j < VGA_WIDTH; j++) {
+            active_tty->tty_buffer[(i - 1) * VGA_WIDTH + j] = active_tty->tty_buffer[i * VGA_WIDTH + j];
         }
     }
     for (int i = 0; i < VGA_WIDTH; i++) {
-        active_tty->tty_buffer[VGA_WIDTH*(VGA_HEIGHT-1)+i] = make_char(0, 0, 0);
+        active_tty->tty_buffer[VGA_WIDTH * (VGA_HEIGHT - 1) + i] = make_char(0, 0, 0);
     }
-    active_tty->line = VGA_HEIGHT-1;
+    active_tty->line = VGA_HEIGHT - 1;
     active_tty->pos = 0;
 }
 
@@ -90,7 +94,8 @@ void putchar(char *c) {
         active_tty->line++;
         active_tty->pos = 0;
     } else {
-        *(active_tty->tty_buffer + active_tty->line * VGA_WIDTH + active_tty->pos) = make_char(*c, active_tty->fg, active_tty->bg);
+        *(active_tty->tty_buffer + active_tty->line * VGA_WIDTH + active_tty->pos) = make_char(*c, active_tty->fg,
+                                                                                               active_tty->bg);
         active_tty->pos += 1;
         active_tty->line += active_tty->pos / VGA_WIDTH;
         active_tty->pos %= VGA_WIDTH;
@@ -98,13 +103,17 @@ void putchar(char *c) {
 }
 
 void print(const char *string) {
+//    static volatile uint8_t print_mutex = 0;
+//    while (print_mutex != 0) {}
+//    print_mutex = 1;
     while (*string != 0) {
         putchar(string++);
     }
     write_buffer(active_tty->tty_buffer);
+//    print_mutex = 0;
 }
 
-void itoa(int num, char* str, int radix) {
+void itoa(int num, char *str, int radix) {
     int i = 0;
     int is_negative = 0;
     if (num < 0 && radix != 16) {
@@ -123,7 +132,7 @@ void itoa(int num, char* str, int radix) {
     str[i] = 0;
 }
 
-void ptoa(uint64_t num, char* str) {
+void ptoa(uint64_t num, char *str) {
     int i = 0;
 
     do {
@@ -136,7 +145,8 @@ void ptoa(uint64_t num, char* str) {
     str[i] = 0;
 }
 
-void printf(const char* format, ...) {
+void printf(const char *format, ...) {
+    acquire_spinlock(&tty_spinlock);
     va_list varargs;
     va_start(varargs, format);
     char digits_buf[100];
@@ -147,19 +157,23 @@ void printf(const char* format, ...) {
                 format++;
                 switch (*format) {
                     case 'd':
-                        itoa(va_arg(varargs, int), digits_buf, 10);
+                        itoa(va_arg(varargs,
+                        int), digits_buf, 10);
                         print(digits_buf);
                         break;
                     case 'o':
-                        itoa(va_arg(varargs, int), digits_buf, 8);
+                        itoa(va_arg(varargs,
+                        int), digits_buf, 8);
                         print(digits_buf);
                         break;
                     case 'x':
-                        itoa(va_arg(varargs, int), digits_buf, 16);
+                        itoa(va_arg(varargs,
+                        int), digits_buf, 16);
                         print(digits_buf);
                         break;
                     case 'b':
-                        itoa(va_arg(varargs, int), digits_buf, 2);
+                        itoa(va_arg(varargs,
+                        int), digits_buf, 2);
                         print(digits_buf);
                         break;
                     case 'p':
@@ -167,7 +181,8 @@ void printf(const char* format, ...) {
                         print(digits_buf);
                         break;
                     case 's':
-                        print(va_arg(varargs, char*));
+                        print(va_arg(varargs,
+                        char*));
                         break;
                     case '%':
                         putchar("%");
@@ -183,5 +198,6 @@ void printf(const char* format, ...) {
         }
         format++;
     }
+    release_spinlock(&tty_spinlock);
 }
 

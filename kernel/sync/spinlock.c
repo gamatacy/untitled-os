@@ -13,10 +13,12 @@ void init_spinlock(struct spinlock *lock, char *name) {
 }
 
 //bool function
-uint8_t acquire_spinlock(struct spinlock *lk) {
+void acquire_spinlock(struct spinlock *lk) {
     pushcli(); // disable interrupts to avoid deadlock.
-    if (holding_spinlock(lk))
-        return 1;
+//    if (holding_spinlock(lk)) {
+//        popcli();
+//        return 1;
+//    }
 
     // The xchg is atomic.
     while (xchg(&lk->is_locked, 1) != 0);
@@ -25,7 +27,7 @@ uint8_t acquire_spinlock(struct spinlock *lk) {
     // past this point, to ensure that the critical section's memory
     // references happen after the lock is acquire_spinlockd.
     __sync_synchronize();
-    return 0;
+    return;
 }
 
 void release_spinlock(struct spinlock *lk) {
