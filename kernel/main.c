@@ -14,8 +14,22 @@
 #include "sched/threads.h"
 #include "sched/scheduler.h"
 
+
+
+void print_num(uint32_t num) {
+    while (1) {
+        printf("Hello from thread %d\n", num);
+        // yield();
+    }
+}
+void thread_function(int argc, struct argument *args) {
+    uint32_t num = *((uint32_t*) args[0].value);
+    print_num(num);
+}
+
+
+
 int kernel_main(){
-    setup_idt();
     init_tty();
     
     for (uint8_t i=0; i < TERMINALS_NUMBER; i++) {
@@ -43,7 +57,9 @@ int kernel_main(){
     struct thread *init_thread = peek_thread_list(init_proc_node->data->threads);
     printf("Got init thread\n");
 
-    scheduler();
+    setup_idt();
+
+    //scheduler();
 
     while(1) {};
     return 0;

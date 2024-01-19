@@ -10,18 +10,6 @@
 
 struct thread *current_thread = 0;
 
-void thread_function(int argc, struct argument *args) {
-    uint32_t num = *((uint32_t*) args[0].value);
-    print_num(num);
-}
-
-void print_num(uint32_t num) {
-    while (1) {
-        printf("Hello from thread %d\n", num);
-        yield();
-    }
-}
-
 void init_thread(struct thread *thread, void (*start_function)(void *), int argc, struct argument *args) {
     thread->stack = kalloc();
     thread->kstack = kalloc();

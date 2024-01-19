@@ -6,6 +6,7 @@
 #include "../pic/pic.h"
 #include "../vga/vga.h"
 #include "../tty/tty.h"
+#include "../sched/scheduler.h"
 #define F1 0x3B
 
 struct interrupt_frame;
@@ -33,8 +34,11 @@ __attribute__((interrupt)) void default_handler(struct interrupt_frame* frame) {
 }
 
 __attribute__((interrupt)) void timer_interrupt(struct interrupt_frame* frame) {
-    // print("clock\n");
+    static struct context *kernel_context = 0;
+     print("clock\n");
     outb(PIC1_COMMAND, PIC_EOI);
+    struct thread *next_thread = get_next_thread();
+    switch_context(&kernel_context, next_thread->context);
 }
 
 char* error_messages[] = {

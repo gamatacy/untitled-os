@@ -9,6 +9,7 @@
 #include "threads.h"
 #define ROUNDS_PER_PROC 5
 
+struct thread *get_next_thread(void);
 void scheduler(void);
 void yield(void);
 

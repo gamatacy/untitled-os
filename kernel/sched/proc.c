@@ -14,11 +14,11 @@ struct spinlock proc_lock;
 struct proc_node *proc_list;
 
 pid_t generate_pid() {
-    //acquire(&pid_lock);
+    acquire_spinlock(&pid_lock);
     static pid_t current_pid = 0;
     int local_pid = current_pid;
     current_pid++;
-    //release(&pid_lock);
+    release_spinlock(&pid_lock);
     return local_pid;
 }
 
@@ -34,16 +34,16 @@ struct proc *allocproc(void) {
     proc->threads = 0;
     proc->killed = 0;
 
-    //acquire(&proc_lock);
+    acquire_spinlock(&proc_lock);
     push_proc_list(&proc_list, proc);
-    //release(&proc_lock);
+    release_spinlock(&proc_lock);
 
     return proc;
 }
 
 struct proc_node *procinit(void) {
-    //initlock(&pid_lock, "pid_lock");
-    //initlock(&proc_lock, "proc_lock");
+    init_spinlock(&pid_lock, "pid_lock");
+    init_spinlock(&proc_lock, "proc_lock");
     
     struct proc *init_proc = allocproc();
     printf("Init proc allocated\n");
